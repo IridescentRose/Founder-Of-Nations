@@ -1,0 +1,3 @@
+[submodule "ext/Stardust-Celeste"]
+	path = ext/Stardust-Celeste
+	url = https://github.com/Iridescence-Technologies/Stardust-Celeste.git
