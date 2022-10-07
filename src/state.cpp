@@ -25,11 +25,15 @@ auto GameState::on_start() -> void {
     psp_controller->add_command({ (int)Input::PSPButtons::Down, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::Left, KeyFlag::Press | KeyFlag::Held }, { Player::move_left, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::Right, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::LTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltL, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::RTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltR, player.get() });
 
-    key_controller->add_command({ (int)Input::Keys::Up, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });
-    key_controller->add_command({ (int)Input::Keys::Down, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
-    key_controller->add_command({ (int)Input::Keys::Left, KeyFlag::Press | KeyFlag::Held }, { Player::move_left, player.get() });
-    key_controller->add_command({ (int)Input::Keys::Right, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
+    key_controller->add_command({ (int)Input::Keys::W, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });
+    key_controller->add_command({ (int)Input::Keys::S, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
+    key_controller->add_command({ (int)Input::Keys::A, KeyFlag::Press | KeyFlag::Held }, { Player::move_left, player.get() });
+    key_controller->add_command({ (int)Input::Keys::D, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
+    key_controller->add_command({ (int)Input::Keys::Q, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltL, player.get() });
+    key_controller->add_command({ (int)Input::Keys::E, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltR, player.get() });
 
     Input::add_controller(psp_controller);
     Input::add_controller(key_controller);

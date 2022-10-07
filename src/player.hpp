@@ -19,8 +19,11 @@ public:
 	static auto move_down(std::any a) -> void;
 	static auto move_left(std::any a) -> void;
 	static auto move_right(std::any a) -> void;
+	static auto move_tiltL(std::any a) -> void;
+	static auto move_tiltR(std::any a) -> void;
 
 	glm::vec3 pos, vel, acc;
+	float rot;
 
 private:
 	ScopePtr<Rendering::Camera> camera;

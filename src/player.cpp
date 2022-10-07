@@ -9,8 +9,8 @@ Player::Player() : texture(0) {
 
     camera = create_scopeptr<Rendering::Camera>(
         glm::vec3(0, 0, 0),
-        glm::vec3(degtorad(30.0f), 0, 0),
-        degtorad(60.0f),
+        glm::vec3(degtorad(25.0f), 0, 0),
+        degtorad(45.0f),
         16.0f / 9.0f,
         0.3f,
         128.0f * PLAYER_SIZE
@@ -26,6 +26,7 @@ Player::Player() : texture(0) {
     vel = glm::vec3(0, 0, 0);
     acc = glm::vec3(0, 0, 0);
     pos = glm::vec3(16, 0, 16);
+    rot = 0.0f;
 }
 
 Player::~Player() {
@@ -39,9 +40,11 @@ auto Player::update(double dt) -> void {
     pos += vel * (float)dt;
 
     camera->pos = pos * PLAYER_SIZE;
-    camera->pos.x += 0.5f * PLAYER_SIZE;
-    camera->pos.y += 2.0f * PLAYER_SIZE;
-    camera->pos.z += 2.5f * PLAYER_SIZE;
+    camera->pos.y += 3.0f * PLAYER_SIZE;
+    camera->pos.x += sinf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
+    camera->pos.z += cosf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
+
+    camera->rot.y = degtorad(-rot);
 
     vel *= 0.9f;
     acc = glm::vec3(0, 0, 0);
@@ -51,7 +54,10 @@ auto Player::update(double dt) -> void {
 
 auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_clear();
-    Rendering::RenderContext::get().matrix_translate({ pos.x * PLAYER_SIZE, pos.y * PLAYER_SIZE, pos.z * PLAYER_SIZE });
+    Rendering::RenderContext::get().matrix_translate({ (pos.x) * PLAYER_SIZE, pos.y * PLAYER_SIZE, pos.z * PLAYER_SIZE });
+    Rendering::RenderContext::get().matrix_rotate({ 0, rot, 0 });
+    Rendering::RenderContext::get().matrix_translate({ (-0.5f) * PLAYER_SIZE, 0, 0 });
+
     character->draw();
 }
 
@@ -83,5 +89,21 @@ auto Player::move_right(std::any a) -> void {
 
     if (p != nullptr) {
         p->acc.x = PLAYER_ACCELERATION;
+    }
+}
+
+auto Player::move_tiltL(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        p->rot -= 0.5f;
+    }
+}
+
+auto Player::move_tiltR(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        p->rot += 0.5f;
     }
 }
