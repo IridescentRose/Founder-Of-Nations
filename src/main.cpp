@@ -13,8 +13,7 @@ class GameApplication : public Core::Application {
         clear.color = 0xFFFFCC88;
 
         Rendering::RenderContext::get().set_color(clear);
-        Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
-        Rendering::RenderContext::get().set_mode_2D();
+        Rendering::RenderContext::get().set_mode_3D();
     }
 
   private:
