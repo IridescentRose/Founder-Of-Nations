@@ -22,7 +22,6 @@ class GameState final : public Core::ApplicationState {
         ScopePtr<Player> player;
 
     Utilities::Controller *psp_controller;
-    Utilities::Controller *vita_controller;
     Utilities::Controller *key_controller;
     Utilities::Controller *mouse_controller;
 };

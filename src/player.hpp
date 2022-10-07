@@ -15,7 +15,12 @@ public:
 	auto update(double dt) -> void;
 	auto draw() -> void;
 
-	glm::vec3 pos, vel;
+	static auto move_up(std::any a) -> void;
+	static auto move_down(std::any a) -> void;
+	static auto move_left(std::any a) -> void;
+	static auto move_right(std::any a) -> void;
+
+	glm::vec3 pos, vel, acc;
 
 private:
 	ScopePtr<Rendering::Camera> camera;

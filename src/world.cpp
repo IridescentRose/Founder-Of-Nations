@@ -12,12 +12,12 @@ World::~World() {
 auto World::generate() -> void {
     for (uint32_t y = 0; y < MAP_SIDE_LENGTH; y++) {
         for (uint32_t x = 0; x < MAP_SIDE_LENGTH; x++) {
-            tiles[x + y * MAP_SIDE_LENGTH] = 0;
+            tiles[x + y * MAP_SIDE_LENGTH] = y;
         }
     }
 
-    for (uint32_t y = 0; y < 256; y++) {
-        for (uint32_t x = 0; x < 256; x++) {
+    for (uint32_t y = 0; y < 64; y++) {
+        for (uint32_t x = 0; x < 64; x++) {
             Graphics::G2D::Tile tile = { 
                 { {x * TILE_SIZE, y * TILE_SIZE} , {TILE_SIZE, TILE_SIZE}},
                 {255, 255, 255, 255}, 
