@@ -38,6 +38,6 @@ auto World::update(double dt) -> void {
 
 auto World::draw() -> void {
     Rendering::RenderContext::get().matrix_clear();
-    Rendering::RenderContext::get().matrix_rotate({-90, 0, 0});
+    Rendering::RenderContext::get().matrix_rotate({-90, 0, -90});
     tilemap->draw();
 }

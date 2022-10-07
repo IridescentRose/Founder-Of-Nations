@@ -1,8 +1,7 @@
 #pragma once 
 #include <Stardust-Celeste.hpp>
-#include <Rendering/Camera.hpp>
-#include <Graphics/2D/Sprite.hpp>
 #include "world.hpp"
+#include "player.hpp"
 
 using namespace Stardust_Celeste;
 
@@ -20,10 +19,7 @@ class GameState final : public Core::ApplicationState {
 
     private:
         ScopePtr<World> world;
-
-        //TODO: Put this in the player controller class
-        ScopePtr<Rendering::Camera> camera;
-        ScopePtr<Graphics::G2D::Sprite> character;
+        ScopePtr<Player> player;
 
     Utilities::Controller *psp_controller;
     Utilities::Controller *vita_controller;
