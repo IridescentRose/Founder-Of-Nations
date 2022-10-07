@@ -1,5 +1,6 @@
 #pragma once 
 #include <Stardust-Celeste.hpp>
+#include "world.hpp"
 
 using namespace Stardust_Celeste;
 
@@ -16,6 +17,8 @@ class GameState final : public Core::ApplicationState {
     auto on_draw(Core::Application *app, double dt) -> void;
 
     private:
+        ScopePtr<World> world;
+
     Utilities::Controller *psp_controller;
     Utilities::Controller *vita_controller;
     Utilities::Controller *key_controller;
