@@ -1,3 +1,15 @@
 {
-    "C_Cpp.clang_format_fallbackStyle": "Chromium"
+    "C_Cpp.clang_format_fallbackStyle": "Chromium",
+    "files.associations": {
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "chrono": "cpp",
+        "mutex": "cpp",
+        "any": "cpp"
+    }
 }

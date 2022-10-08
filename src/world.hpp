@@ -1,6 +1,6 @@
 #pragma once
 #include <Stardust-Celeste.hpp>
-#include <Graphics/2D/Tilemap.hpp>
+#include <Graphics/2D/AnimatedTilemap.hpp>
 
 using namespace Stardust_Celeste;
 
@@ -19,6 +19,6 @@ class World final {
 
     private:
         std::array<uint8_t, 1024 * 1024> tiles;
-        ScopePtr<Graphics::G2D::Tilemap> tilemap;
+        ScopePtr<Graphics::G2D::AnimatedTilemap> tilemap;
         u32 terrain_texture;
 };

@@ -9,7 +9,7 @@ Player::Player() : texture(0) {
 
     camera = create_scopeptr<Rendering::Camera>(
         glm::vec3(0, 0, 0),
-        glm::vec3(degtorad(25.0f), 0, 0),
+        glm::vec3(degtorad(30.0f), 0, 0),
         degtorad(45.0f),
         16.0f / 9.0f,
         0.3f,
@@ -33,14 +33,12 @@ Player::~Player() {
 
 }
 
-const float PLAYER_SPEED = 4.0f;
-
 auto Player::update(double dt) -> void {
     vel += acc * (float)dt;
     pos += vel * (float)dt;
 
     camera->pos = pos * PLAYER_SIZE;
-    camera->pos.y += 3.0f * PLAYER_SIZE;
+    camera->pos.y += 4.2f * PLAYER_SIZE;
     camera->pos.x += sinf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
     camera->pos.z += cosf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
 
@@ -61,34 +59,38 @@ auto Player::draw() -> void {
     character->draw();
 }
 
-const float PLAYER_ACCELERATION = 80.0f;
+const float PLAYER_ACCELERATION = 69.0f;
 
 auto Player::move_up(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->acc.z = -PLAYER_ACCELERATION;
+        p->acc.x += -sinf(degtorad(p->rot)) * PLAYER_ACCELERATION;
+        p->acc.z += -cosf(degtorad(p->rot)) * PLAYER_ACCELERATION;
     }
 }
 auto Player::move_down(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->acc.z = PLAYER_ACCELERATION;
+        p->acc.x += sinf(degtorad(p->rot)) * PLAYER_ACCELERATION;
+        p->acc.z += cosf(degtorad(p->rot)) * PLAYER_ACCELERATION;
     }
 }
 auto Player::move_left(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->acc.x = -PLAYER_ACCELERATION;
+        p->acc.x += -sinf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
+        p->acc.z += -cosf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
     }
 }
 auto Player::move_right(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->acc.x = PLAYER_ACCELERATION;
+        p->acc.x += sinf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
+        p->acc.z += cosf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
     }
 }
 
@@ -96,7 +98,7 @@ auto Player::move_tiltL(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->rot -= 0.5f;
+        p->rot -= 1.0f;
     }
 }
 
@@ -104,6 +106,6 @@ auto Player::move_tiltR(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->rot += 0.5f;
+        p->rot += 1.0f;
     }
 }

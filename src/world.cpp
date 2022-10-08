@@ -2,7 +2,7 @@
 
 World::World() {
     terrain_texture = Rendering::TextureManager::get().load_texture("./assets/terrain.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-    tilemap = create_scopeptr<Graphics::G2D::Tilemap>(terrain_texture, glm::vec2(16, 16));
+    tilemap = create_scopeptr<Graphics::G2D::AnimatedTilemap>(terrain_texture, glm::vec2(16, 16));
 }
 
 World::~World() {
@@ -19,13 +19,13 @@ auto World::generate() -> void {
 
     for (uint32_t y = 0; y < 64; y++) {
         for (uint32_t x = 0; x < 64; x++) {
-            Graphics::G2D::Tile tile = { 
-                { {x * TILE_SIZE, y * TILE_SIZE} , {TILE_SIZE, TILE_SIZE}},
-                {255, 255, 255, 255}, 
-                tiles[x + y * MAP_SIDE_LENGTH], 
-                0.0f 
-            };
-
+            Graphics::G2D::AnimatedTile tile;
+            tile.bounds = Rendering::Rectangle{ {x * TILE_SIZE, y * TILE_SIZE} , {TILE_SIZE, TILE_SIZE}};
+            tile.color.color = 0xFFFFFFFF;
+            tile.layer = 0;
+            tile.index = tiles[x + y * MAP_SIDE_LENGTH];
+            tile.start_idx = 0 + 16;
+            tile.final_idx = 4 + 16;
             tilemap->add_tile(tile);
         }
     }
