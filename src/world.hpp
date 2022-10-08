@@ -1,11 +1,12 @@
 #pragma once
 #include <Stardust-Celeste.hpp>
 #include <Graphics/2D/AnimatedTilemap.hpp>
+#include "chunk.hpp"
+#include "player.hpp"
 
 using namespace Stardust_Celeste;
 
 const uint32_t MAP_SIDE_LENGTH = 1024;
-const uint32_t TILE_SIZE = 32;
 
 class World final {
     public:
@@ -15,10 +16,9 @@ class World final {
     auto generate() -> void;
 
     auto update(double dt) -> void;
-    auto draw() -> void;
+    auto draw(Player* p) -> void;
 
     private:
-        std::array<uint8_t, 1024 * 1024> tiles;
-        ScopePtr<Graphics::G2D::AnimatedTilemap> tilemap;
-        u32 terrain_texture;
+        u32 terrain_texture, tree_texture;
+        Chunk* chunk;
 };

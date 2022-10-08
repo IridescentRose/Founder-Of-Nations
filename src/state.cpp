@@ -57,6 +57,6 @@ auto GameState::on_update(Core::Application *app, double dt) -> void {
 }
 
 auto GameState::on_draw(Core::Application *app, double dt) -> void {
-    world->draw();
+    world->draw(player.get());
     player->draw();
 }
