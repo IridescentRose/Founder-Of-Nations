@@ -33,7 +33,15 @@ Player::~Player() {
 
 }
 
+const float PLAYER_ACCELERATION = 42.069f;
 auto Player::update(double dt) -> void {
+    float len = sqrtf(acc.x * acc.x + acc.z * acc.z);
+
+    if(len > 0) {
+        acc /= len;
+        acc *= PLAYER_ACCELERATION;
+    }
+
     vel += acc * (float)dt;
     pos += vel * (float)dt;
 
@@ -58,8 +66,6 @@ auto Player::draw() -> void {
 
     character->draw();
 }
-
-const float PLAYER_ACCELERATION = 69.0f;
 
 auto Player::move_up(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
@@ -98,7 +104,7 @@ auto Player::move_tiltL(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->rot -= 1.0f;
+        p->rot += 1.0f;
     }
 }
 
@@ -106,6 +112,6 @@ auto Player::move_tiltR(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        p->rot += 1.0f;
+        p->rot -= 1.0f;
     }
 }
