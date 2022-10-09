@@ -140,7 +140,7 @@ auto WorldGen::generate(int cX, int cY, uint8_t *data, uint8_t *biome, uint8_t *
             }
             if ((biome[idx] == Biome::Forest || biome[idx] == Biome::Taiga) &&
                 data[idx] == Tile::Grass) {
-                int check = rand() % 75;
+                int check = rand() % 150;
 
                 if (check <= 1){
                     data[idx] = Tile::Grass;

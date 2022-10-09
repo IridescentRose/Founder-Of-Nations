@@ -2,14 +2,22 @@
 #include <Stardust-Celeste.hpp>
 #include <Rendering/Camera.hpp>
 #include <Graphics/2D/Sprite.hpp>
+#include "entity.hpp"
 #include "world.hpp"
 
 using namespace Stardust_Celeste;
 
 const float PLAYER_SIZE = 32.0f;
-class World;
+const float PLAYER_ACCELERATION = 42.069f;
 
-class Player final {
+inline auto degtorad(float x) -> float {
+	return x / 180.0f * 3.14159f;
+}
+
+class World;
+class Entity;
+
+class Player final : public Entity {
 public:
 	Player();
 	~Player();
@@ -24,7 +32,6 @@ public:
 	static auto move_tiltL(std::any a) -> void;
 	static auto move_tiltR(std::any a) -> void;
 
-	glm::vec3 pos, vel, acc;
 	float rot;
 
 private:
