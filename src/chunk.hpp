@@ -4,7 +4,11 @@
 #include <Stardust-Celeste.hpp>
 
 using namespace Stardust_Celeste;
-using namespace Graphics::G2D;
+using namespace Graphics;
+
+const uint32_t CHUNK_SIZE_X = 16;
+const uint32_t CHUNK_SIZE_Y = 16;
+const uint32_t TILE_SIZE = 32;
 
 class Chunk {
   public:
@@ -12,7 +16,6 @@ class Chunk {
 
     auto update(float dt) -> void;
     auto draw(float rot) -> void;
-
 
     auto generate_tile_data() -> void;
     auto generate_mesh_data() -> void;
@@ -22,6 +25,6 @@ class Chunk {
     uint8_t tiles[256];
     uint8_t biome[256];
     uint8_t layer2[256];
-    ScopePtr<AnimatedTilemap> tmap;
-    ScopePtr<Sprite> flora[16];
+    ScopePtr<G2D::AnimatedTilemap> tmap;
+    ScopePtr<G2D::Sprite> flora[16];
 };

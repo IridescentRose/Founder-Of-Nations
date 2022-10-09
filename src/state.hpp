@@ -19,7 +19,7 @@ class GameState final : public Core::ApplicationState {
 
     private:
         ScopePtr<World> world;
-        ScopePtr<Player> player;
+        RefPtr<Player> player;
 
     Utilities::Controller *psp_controller;
     Utilities::Controller *key_controller;

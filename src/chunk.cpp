@@ -1,21 +1,16 @@
 #include "chunk.hpp"
 #include "generator.hpp"
 
-const uint32_t CHUNK_SIZE_X = 16;
-const uint32_t CHUNK_SIZE_Y = 16;
-const uint32_t TILE_SIZE = 32;
-
-
 Chunk::Chunk(int cx, int cy, u32 terrain, u32 tree) : cX(cx), cY(cy) {
-    tmap = create_scopeptr<AnimatedTilemap>(
+    tmap = create_scopeptr<G2D::AnimatedTilemap>(
         terrain,
         glm::vec2{16, 16});
 
     for(int i = 0; i < 16; i++){
-        flora[i] = create_scopeptr<Sprite>(
+        flora[i] = create_scopeptr<G2D::Sprite>(
             tree,
             Rendering::Rectangle{ {0, 0}, {16 + 8, 48 + 24}},
-            Rendering::Rectangle{ {0.25f * (i % 4), 0.75 - (i / 4) * 0.25f}, {0.25, 0.25}}
+            Rendering::Rectangle{ {0.25f * (i % 4), 0.75f - (i / 4) * 0.25f}, {0.25, 0.25}}
         );
     }
 
@@ -82,7 +77,7 @@ auto get_tile_data(uint8_t id, uint8_t biome) -> TileData {
     }
 }
 
-auto create_tile(uint8_t id, uint8_t biome, glm::vec2 pos) -> AnimatedTile {
+auto create_tile(uint8_t id, uint8_t biome, glm::vec2 pos) -> G2D::AnimatedTile {
     auto data = get_tile_data(id, biome);
     return Graphics::G2D::AnimatedTile {
         Rendering::Rectangle{glm::vec2{pos.x * TILE_SIZE, pos.y * TILE_SIZE},
@@ -106,7 +101,6 @@ auto Chunk::generate_mesh_data() -> void {
         for (int y = 0; y < CHUNK_SIZE_Y; y++) {
             auto idx = x + y * CHUNK_SIZE_X;
             tmap->add_tile(create_tile(tiles[idx], biome[idx], {x, y}));
-            //TODO: Layer2 Flora
         }
 
     tmap->generate_map();
@@ -114,54 +108,45 @@ auto Chunk::generate_mesh_data() -> void {
 
 auto Chunk::draw(float rot) -> void {
     Rendering::RenderContext::get().matrix_clear();
-    Rendering::RenderContext::get().matrix_translate(glm::vec3(cX * TILE_SIZE * CHUNK_SIZE_X, cY * TILE_SIZE * CHUNK_SIZE_Y, 0));
-    Rendering::RenderContext::get().matrix_rotate({-90, 0, -90});
+    Rendering::RenderContext::get().matrix_translate(
+        glm::vec3(
+            cX * TILE_SIZE * CHUNK_SIZE_X, 
+            0, 
+            cY * TILE_SIZE * CHUNK_SIZE_Y)
+    );
+#ifndef PSP
+    glFrontFace(GL_CW);
+#endif
+    Rendering::RenderContext::get().matrix_rotate({90, 0, 0});
     tmap->draw();
 
+#ifndef PSP
+    glFrontFace(GL_CCW);
+#endif
+    
     for(uint32_t y = 0; y < CHUNK_SIZE_X; y++){
         for(uint32_t x = 0; x < CHUNK_SIZE_Y; x++){
             int idx = x + y * CHUNK_SIZE_X;
-
             auto t = layer2[idx];
             if(t != 0){
                 auto b = biome[idx];
-                if(t == 1){
-                    if(b < 4){
+                if (t == 1) {
+                    if (b < 4) {
                         Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(glm::vec3(cX * TILE_SIZE * CHUNK_SIZE_X + ((float)y + 0.5f) * TILE_SIZE, 0, cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)x + 0.5f) * TILE_SIZE));
-                        Rendering::RenderContext::get().matrix_rotate({0.0f, rot, 0});
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0});
+                        Rendering::RenderContext::get().matrix_translate(
+                            glm::vec3(
+                                cX * TILE_SIZE * CHUNK_SIZE_X + x * TILE_SIZE,
+                                0,
+                                cY * TILE_SIZE * CHUNK_SIZE_Y + y * TILE_SIZE)
+                        );
+                        Rendering::RenderContext::get().matrix_rotate({ 0.0f, rot, 0 });
+                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
                         flora[b]->draw();
-                    }
-                }
-                if(t == 2){
-                    if(b < 4){
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(glm::vec3(cX * TILE_SIZE * CHUNK_SIZE_X + ((float)y + 0.5f) * TILE_SIZE, 0, cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)x + 0.5f) * TILE_SIZE));
-                        Rendering::RenderContext::get().matrix_rotate({0.0f, rot, 0});
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0});
-                        flora[b + 4]->draw();
-                    }
-                }
-                if(t == 3){
-                    if(b < 4){
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(glm::vec3(cX * TILE_SIZE * CHUNK_SIZE_X + ((float)y + 0.5f) * TILE_SIZE, 0, cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)x + 0.5f) * TILE_SIZE));
-                        Rendering::RenderContext::get().matrix_rotate({0.0f, rot, 0});
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0});
-                        flora[b + 8]->draw();
-                    }
-                }
-                if(t == 5){
-                    if(b < 4){
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(glm::vec3(cX * TILE_SIZE * CHUNK_SIZE_X + ((float)y + 0.5f) * TILE_SIZE, 0, cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)x + 0.5f) * TILE_SIZE));
-                        Rendering::RenderContext::get().matrix_rotate({0.0f, rot, 0});
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0});
-                        flora[b + 12]->draw();
                     }
                 }
             }
         }
     }
+    
+
 }

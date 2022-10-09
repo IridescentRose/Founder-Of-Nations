@@ -25,7 +25,7 @@ Player::Player() : texture(0) {
 
     vel = glm::vec3(0, 0, 0);
     acc = glm::vec3(0, 0, 0);
-    pos = glm::vec3(16, 0, 16);
+    pos = glm::vec3(1024 + 8, 0, 1024 + 8);
     rot = 0.0f;
 }
 
