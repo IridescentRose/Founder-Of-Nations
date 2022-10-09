@@ -100,8 +100,8 @@ auto WorldGen::generate(int cX, int cY, uint8_t *data, uint8_t *biome, uint8_t *
 
                     if (check <= 10)
                         data[idx] = Tile::Stone_Coal;
-                    else if (check == 11)
-                        data[idx] = Tile::Cave_Entrance;
+                    //else if (check == 11)
+                    //    data[idx] = Tile::Cave_Entrance;
                     else
                         data[idx] = Tile::Stone;
                 } else {

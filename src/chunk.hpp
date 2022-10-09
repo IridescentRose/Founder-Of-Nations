@@ -23,6 +23,5 @@ class Chunk {
     uint8_t biome[256];
     uint8_t layer2[256];
     ScopePtr<AnimatedTilemap> tmap;
-    ScopePtr<Sprite> trees[4];
-    ScopePtr<Sprite> flora[4];
+    ScopePtr<Sprite> flora[16];
 };
