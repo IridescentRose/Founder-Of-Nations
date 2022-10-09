@@ -125,45 +125,45 @@ auto WorldGen::generate(int cX, int cY, uint8_t *data, uint8_t *biome, uint8_t *
 
                 if (check <= 50){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 3; //TALL
+                    layer2[idx] = Decorations::Tallgrass; //TALL
                 }
                 else if (check == 51){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 2; //FLOWER
+                    layer2[idx] = Decorations::Flower; //FLOWER
                 }
                 else if (check == 52){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 4; //BUSH
+                    layer2[idx] = Decorations::Bush; //BUSH
                 }
                 else if (check == 53)
-                    layer2[idx] = 1;
+                    layer2[idx] = Decorations::Tree;
             }
             if ((biome[idx] == Biome::Forest || biome[idx] == Biome::Taiga) &&
                 data[idx] == Tile::Grass) {
-                int check = rand() % 200;
+                int check = rand() % 75;
 
                 if (check <= 1){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 2; //FLOWER
+                    layer2[idx] = Decorations::Flower; //FLOWER
                 }else if (check > 1 && check <= 3){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 3; //TALL
+                    layer2[idx] = Decorations::Tallgrass; //TALL
                 }if (biome[idx] == Biome::Forest) {
                     if (check > 5 && check <= 7){
                         data[idx] = Tile::Grass;
-                        layer2[idx] = 4; //BUSH
+                        layer2[idx] = Decorations::Bush; //BUSH
                     }else if (check == 8)
                         data[idx] = Tile::Grass;
-                        layer2[idx] = 5; //MUSHROOM
+                        layer2[idx] = Decorations::Bush; //BUSH
                 } else if (check == 4) {
                         data[idx] = Tile::Grass;
-                        layer2[idx] = 4; //BUSH
+                        layer2[idx] = Decorations::Bush; //BUSH
                 } else if (check == 6) {
-                    layer2[idx] = 1;
+                    layer2[idx] = Decorations::Tree;
                 }
 
                 if (check > 8 && check <= 25) {
-                    layer2[idx] = 1;
+                    layer2[idx] = Decorations::Tree;
                 }
             }
             if (biome[idx] == Biome::Desert && data[idx] == Tile::Grass) {
@@ -171,10 +171,10 @@ auto WorldGen::generate(int cX, int cY, uint8_t *data, uint8_t *biome, uint8_t *
 
                 if (check <= 1){
                     data[idx] = Tile::Grass;
-                    layer2[idx] = 3; //TALL
+                    layer2[idx] = Decorations::Tallgrass; //TALL
                 }
                 else if (check == 2)
-                    layer2[idx] = 1;
+                    layer2[idx] = Decorations::Tree;
             }
         }
     }

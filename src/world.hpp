@@ -5,6 +5,7 @@
 #include "player.hpp"
 #include <map>
 
+class Player;
 using namespace Stardust_Celeste;
 
 const uint32_t MAP_SIDE_LENGTH = 1024;
@@ -16,6 +17,9 @@ class World final {
 
     auto update(double dt) -> void;
     auto draw() -> void;
+
+    auto get_tile(glm::ivec2 pos)->uint8_t;
+    auto get_tile2(glm::ivec2 pos)->uint8_t;
 
     private:
         auto update_chunks() -> void;

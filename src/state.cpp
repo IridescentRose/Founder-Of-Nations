@@ -48,7 +48,7 @@ auto GameState::on_update(Core::Application *app, double dt) -> void {
     //TODO: SEPARATE LOGIC FROM DRAW
     Utilities::Input::update();
 
-    player->update(dt);
+    player->update(world.get(), dt);
     world->update(dt);
 }
 

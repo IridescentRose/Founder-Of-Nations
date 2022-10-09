@@ -2,17 +2,19 @@
 #include <Stardust-Celeste.hpp>
 #include <Rendering/Camera.hpp>
 #include <Graphics/2D/Sprite.hpp>
+#include "world.hpp"
 
 using namespace Stardust_Celeste;
 
 const float PLAYER_SIZE = 32.0f;
+class World;
 
 class Player final {
 public:
 	Player();
 	~Player();
 
-	auto update(double dt) -> void;
+	auto update(World* wrld, double dt) -> void;
 	auto draw() -> void;
 
 	static auto move_up(std::any a) -> void;

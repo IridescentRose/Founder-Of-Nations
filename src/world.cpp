@@ -14,6 +14,40 @@ World::~World() {
 
 }
 
+
+auto World::get_tile(glm::ivec2 pos)-> uint8_t {
+    u16 cX = pos.x / CHUNK_SIZE_X;
+    u16 cZ = pos.y / CHUNK_SIZE_Y;
+    u32 id = ((u16)(cX) << 16) | ((u16)(cZ) & 0x0FF);
+
+    if (mapData.find(id) != mapData.end()) {
+        auto chunk = mapData[id];
+        u16 localX = pos.x - cX * CHUNK_SIZE_X;
+        u16 localZ = pos.y - cZ * CHUNK_SIZE_Y;
+
+        u32 idx = localX + localZ * CHUNK_SIZE_X;
+        return chunk->tiles[idx];
+    }
+
+    return 255;
+}
+auto World::get_tile2(glm::ivec2 pos)-> uint8_t {
+    u16 cX = pos.x / CHUNK_SIZE_X;
+    u16 cZ = pos.y / CHUNK_SIZE_Y;
+    u32 id = ((u16)(cX) << 16) | ((u16)(cZ) & 0x0FF);
+
+    if (mapData.find(id) != mapData.end()) {
+        auto chunk = mapData[id];
+        u16 localX = pos.x - cX * CHUNK_SIZE_X;
+        u16 localZ = pos.y - cZ * CHUNK_SIZE_Y;
+
+        u32 idx = localX + localZ * CHUNK_SIZE_X;
+        return chunk->layer2[idx];
+    }
+
+    return 255;
+}
+
 auto World::update_chunks() -> void {
     auto pos = player->pos;
     auto ivec = glm::ivec2(pos.x / (float)CHUNK_SIZE_X, pos.z / (float)CHUNK_SIZE_Y);

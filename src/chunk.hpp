@@ -20,11 +20,11 @@ class Chunk {
     auto generate_tile_data() -> void;
     auto generate_mesh_data() -> void;
 
+    uint8_t tiles[256];
+    uint8_t layer2[256];
   private:
     int cX, cY;
-    uint8_t tiles[256];
     uint8_t biome[256];
-    uint8_t layer2[256];
     ScopePtr<G2D::AnimatedTilemap> tmap;
     ScopePtr<G2D::Sprite> flora[16];
 };

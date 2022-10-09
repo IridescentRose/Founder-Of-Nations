@@ -32,3 +32,10 @@ namespace Biome {
     const uint8_t Beach = 6;
     const uint8_t River = 7;
 }
+
+namespace Decorations {
+    const uint8_t Tree = 1;
+    const uint8_t Flower = 2;
+    const uint8_t Tallgrass = 3;
+    const uint8_t Bush = 4;
+}
