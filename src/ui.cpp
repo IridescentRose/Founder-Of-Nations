@@ -61,9 +61,6 @@ void UI::draw() {
 	green_bar->draw();
 	font_renderer->add_text("XP: " + std::to_string(entity.xp) + " / " + std::to_string(entity.next_xp), glm::vec2(4, 218), Rendering::Color{ 255, 255, 255, 255 }, -3);
 
-	font_renderer->rebuild();
-	font_renderer->draw();
-
 	for (int i = 0; i < 6; i++) {
 		item_slot->set_position({ 144 + 32 * i, 0 });
 		item_slot->set_layer(-2);
@@ -73,6 +70,14 @@ void UI::draw() {
 	item_slot_sel->set_position({ 144 + 32 * slot_sel, 0 });
 	item_slot_sel->set_layer(-3);
 	item_slot_sel->draw();
+
+	auto str = "POS: " + std::to_string((int)entity.pos.x) + " " + std::to_string((int)entity.pos.z);
+	auto size = font_renderer->calculate_size(str);
+
+	font_renderer->add_text(str, glm::vec2(480 - size, 262), Rendering::Color{ 255, 255, 255, 255 }, -4);
+
+	font_renderer->rebuild();
+	font_renderer->draw();
 
 	glEnable(GL_DEPTH_TEST);
 }
