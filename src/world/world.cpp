@@ -5,11 +5,9 @@ World::World(RefPtr<Player> player) {
     this->player = player;
     terrain_texture = Rendering::TextureManager::get().load_texture("./assets/terrain.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
     tree_texture = Rendering::TextureManager::get().load_texture("./assets/trees.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
-    slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
 
-    slimeSprite = create_refptr<Graphics::G2D::Sprite>(slimeTex, Rendering::Rectangle{ {0, 0}, {32, 32} }, Rendering::Rectangle{ {0.0f, 0.0f}, {0.25f, 1.0f} });
-    slime = create_scopeptr<Slime>(slimeSprite);
-    slime->pos = glm::vec3(1024, 0, 1024);
+    eman = create_scopeptr<EntityManager>(player);
+    eman->create_random_slime({1024, 0, 1024});
 
     NoiseUtil::initialize();
 
@@ -98,8 +96,8 @@ auto World::update(double dt) -> void {
     for (auto& [key, val] : mapData) {
         val->update(dt);
     }
-    
-    slime->update_enemy(this, dt, player->pos);
+
+    eman->update(this, dt);
 }
 
 auto World::draw() -> void {
@@ -107,5 +105,5 @@ auto World::draw() -> void {
         val->draw(player->rot);
     }
 
-    slime->draw(player->rot);
+    eman->draw();
 }

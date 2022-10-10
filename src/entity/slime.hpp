@@ -1,3 +1,4 @@
+#pragma once
 #include "enemy.hpp"
 
 class Slime : public Enemy {
@@ -7,7 +8,7 @@ public:
     };
     virtual ~Slime() = default;
 
-    auto update_enemy(World* wrld, double dt, glm::vec3 player_pos) -> void;
+    auto update_enemy(World* wrld, double dt, glm::vec3 player_pos) -> void override;
 protected:
     float timer;
 };
