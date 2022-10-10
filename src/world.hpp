@@ -3,6 +3,7 @@
 #include <Graphics/2D/AnimatedTilemap.hpp>
 #include "chunk.hpp"
 #include "player.hpp"
+#include "slime.hpp"
 #include <map>
 
 class Player;
@@ -24,7 +25,9 @@ class World final {
     private:
         auto update_chunks() -> void;
 
-        u32 terrain_texture, tree_texture;
+        u32 terrain_texture, tree_texture, slimeTex;
         std::map<u32, Chunk*> mapData;
         RefPtr<Player> player;
+        ScopePtr<Slime> slime;
+        RefPtr<Graphics::G2D::Sprite> slimeSprite;
 };

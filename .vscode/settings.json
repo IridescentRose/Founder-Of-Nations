@@ -10,6 +10,7 @@
         "vector": "cpp",
         "chrono": "cpp",
         "mutex": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "cstdlib": "cpp"
     }
 }
