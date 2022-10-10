@@ -37,14 +37,12 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
 
 auto EntityManager::update(World* wrld, double dt) -> void {
     for(auto& [id, e] : entities) {
-        Enemy* enemy = reinterpret_cast<Enemy*>(e.get());
-        enemy->update_enemy(wrld, dt, player->pos);
+        e->update_enemy(wrld, dt, player->pos);
     }
 }
 
 auto EntityManager::draw() -> void {
     for(auto& [id, e] : entities) {
-        Enemy* enemy = reinterpret_cast<Enemy*>(e.get());
-        enemy->draw(player->rot);
+        e->draw(player->rot);
     }
 }

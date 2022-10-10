@@ -2,6 +2,7 @@
 #include "entity.hpp"
 #include "../player/player.hpp"
 class Player;
+class Enemy;
 
 class EntityManager final {
     public:
@@ -15,7 +16,7 @@ class EntityManager final {
 
     private:
     RefPtr<Player> player;
-    std::map<u32, RefPtr<Entity>> entities;
+    std::map<u32, RefPtr<Enemy>> entities;
     
     u32 slimeTex;
     RefPtr<Graphics::G2D::Sprite> slimeSprites[4];

@@ -1,6 +1,6 @@
 #include "entity.hpp"
-#include "tiles.hpp"
-#include "world.hpp"
+#include "../world/tiles.hpp"
+#include "../world/world.hpp"
 
 auto test(glm::ivec2 pos, World* wrld) -> bool {
     auto t = wrld->get_tile(pos);
