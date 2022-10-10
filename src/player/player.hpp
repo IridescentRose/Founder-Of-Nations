@@ -37,10 +37,14 @@ public:
 	static auto invScrollL(std::any a) -> void;
 	static auto invScrollR(std::any a) -> void;
 
+	static auto hit(std::any a) -> void;
+
 	float rot;
 	RefPtr<Inventory> inventory;
 private:
 	bool facing;
+	bool swing;
+	float swingTimer;
 	ScopePtr<Rendering::Camera> camera;
 	ScopePtr<Graphics::G2D::AnimatedSprite> character;
 	ScopePtr<UI> ui;

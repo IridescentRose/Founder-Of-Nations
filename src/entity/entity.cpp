@@ -30,7 +30,7 @@ auto Entity::take_damage(Entity* e) -> void {
     int dmg = e->atk - def;
     if(dmg > 0) {
         nhp -= dmg;
-        iframes = 3;
+        iframes = 1;
         hp = (nhp < 0) ? 0 : nhp;
     }
 }

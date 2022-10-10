@@ -69,3 +69,15 @@ auto Player::invScrollR(std::any a) -> void {
             p->invSelect = 0;
     }
 }
+
+
+auto Player::hit(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        if(!p->swing){
+            p->swingTimer = 1.25f / 2.0f;
+            p->swing = true;
+        }
+    }
+}

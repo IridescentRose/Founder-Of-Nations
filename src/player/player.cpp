@@ -55,22 +55,6 @@ auto Player::update(World* wrld, double dt) -> void {
         acc *= PLAYER_ACCELERATION;
     }
 
-    if(acc.x != 0 || acc.z != 0){
-        character->set_animation_range(9, 14);
-    }else {
-        character->set_animation_range(0, 3);
-    }
-
-    Entity::update(wrld, dt);
-
-    camera->pos = pos * PLAYER_SIZE;
-    camera->pos.y += 4.2f * PLAYER_SIZE;
-    camera->pos.x += sinf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
-    camera->pos.z += cosf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
-    camera->rot.y = degtorad(-rot);
-    Rendering::RenderContext::get().set_mode_3D();
-    camera->update();
-    
     ui->slot_sel = invSelect;
 
     Slot item = inventory->get_slot(invSelect);
@@ -85,6 +69,40 @@ auto Player::update(World* wrld, double dt) -> void {
     } else {
         atk = base_atk;
     }
+
+    if(!swing){
+
+        character->ticksPerSec = 4.0f;
+        if(acc.x != 0 || acc.z != 0){
+            character->set_animation_range(9, 14);
+        }else {
+            if(item.itemID == Item::Sword) {
+                character->set_animation_range(38, 41);
+            } else {
+                character->set_animation_range(0, 3);
+            }
+        }
+    } else {
+        swingTimer -= dt;
+        character->set_animation_range(43, 47);
+        character->ticksPerSec = 8.0f;
+
+        if(swingTimer <= 0) {
+            swing = false;
+        }
+    }
+
+    Entity::update(wrld, dt);
+
+    camera->pos = pos * PLAYER_SIZE;
+    camera->pos.y += 4.2f * PLAYER_SIZE;
+    camera->pos.x += sinf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
+    camera->pos.z += cosf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
+    camera->rot.y = degtorad(-rot);
+    Rendering::RenderContext::get().set_mode_3D();
+    camera->update();
+    
+
 }
 
 auto Player::draw() -> void {
@@ -101,7 +119,7 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_translate({ -50*0.75f, 0, 0 });
     character->draw();
     glEnable(GL_CULL_FACE);
-    
+
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
     Rendering::RenderContext::get().set_mode_2D();
     Rendering::RenderContext::get().matrix_clear();

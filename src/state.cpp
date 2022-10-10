@@ -35,8 +35,11 @@ auto GameState::on_start() -> void {
     key_controller->add_command({ (int)Input::Keys::Z, KeyFlag::Press }, { Player::invScrollL, player.get() });
     key_controller->add_command({ (int)Input::Keys::C, KeyFlag::Press }, { Player::invScrollR, player.get() });
 
+    mouse_controller->add_command({(int)Input::MouseButtons::Left, KeyFlag::Press}, {Player::hit, player.get()});
+
     Input::add_controller(psp_controller);
     Input::add_controller(key_controller);
+    Input::add_controller(mouse_controller);
 
     tick_timer = 0.0f;
     
@@ -56,7 +59,7 @@ auto GameState::on_update(Core::Application *app, double dt) -> void {
     world->update(dt);
 
     tick_timer += dt;
-    if(tick_timer > 0.25f){
+    if(tick_timer > 0.5f){
         tick_timer = 0.0f;
         world->tick();
     }
