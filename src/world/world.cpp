@@ -108,5 +108,6 @@ auto World::draw() -> void {
 }
 
 auto World::tick() -> void {
+    player->tick();
     eman->tick(this);
 }

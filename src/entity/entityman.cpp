@@ -52,6 +52,10 @@ auto EntityManager::update(World* wrld, double dt) -> void {
             ids.push_back(id);
         } else {
             e->update_enemy(wrld, dt, player->pos);
+
+            if(len < 1) {
+                player->take_damage(e.get());
+            }
         }
     }
 
@@ -91,5 +95,8 @@ auto EntityManager::tick(World* wrld) -> void {
             }
         }
 
+    }
+    for(auto& [id, e] : entities) {
+        e->tick();
     }
 }

@@ -8,6 +8,33 @@ auto test(glm::ivec2 pos, World* wrld) -> bool {
     return t == Tile::Stone || t == Tile::Stone_Coal || l == 1;
 }
 
+auto Entity::tick() -> void {
+    if(iframes > 0)
+        iframes--;
+    else {
+        hp++; //TODO: BETTER REGEN
+        if(hp > base_hp)
+            hp = base_hp;
+    }
+}
+
+auto Entity::take_damage(Entity* e) -> void {
+    if(e == nullptr)
+        return;
+    
+    if(iframes != 0 || immortal)
+        return;
+
+    int nhp = hp;
+
+    int dmg = e->atk - def;
+    if(dmg > 0) {
+        nhp -= dmg;
+        iframes = 4;
+        hp = (nhp < 0) ? 0 : nhp;
+    }
+}
+
 auto Entity::update(World* wrld, double dt) -> void {
     vel += acc * (float)dt;
     auto testpos = pos + vel * (float)dt;
