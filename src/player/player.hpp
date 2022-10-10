@@ -5,6 +5,7 @@
 #include "../entity/entity.hpp"
 #include "../world/world.hpp"
 #include "ui.hpp"
+#include "inventory.hpp"
 
 using namespace Stardust_Celeste;
 
@@ -33,11 +34,15 @@ public:
 	static auto move_tiltL(std::any a) -> void;
 	static auto move_tiltR(std::any a) -> void;
 
-	float rot;
+	static auto invScrollL(std::any a) -> void;
+	static auto invScrollR(std::any a) -> void;
 
+	float rot;
+	RefPtr<Inventory> inventory;
 private:
 	ScopePtr<Rendering::Camera> camera;
 	ScopePtr<Graphics::G2D::Sprite> character;
 	ScopePtr<UI> ui;
 	u32 texture;
+	s32 invSelect;
 };

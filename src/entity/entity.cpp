@@ -30,7 +30,7 @@ auto Entity::take_damage(Entity* e) -> void {
     int dmg = e->atk - def;
     if(dmg > 0) {
         nhp -= dmg;
-        iframes = 4;
+        iframes = 3;
         hp = (nhp < 0) ? 0 : nhp;
     }
 }
@@ -90,8 +90,10 @@ auto Entity::update(World* wrld, double dt) -> void {
     auto t = wrld->get_tile({ (int)pos.x, (int)pos.z });
     in_water = t == Tile::Water_Heavy || t == Tile::Water_Light;
 
-    if (in_water) {
+    if (t == Tile::Water_Heavy) {
         vel *= 0.8f;
+    } else if (t == Tile::Water_Light) {
+        vel *= 0.9f;
     }
 
     pos += vel * (float)dt;

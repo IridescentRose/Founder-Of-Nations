@@ -46,3 +46,24 @@ auto Player::move_tiltR(std::any a) -> void {
         p->rot -= 1.0f;
     }
 }
+
+auto Player::invScrollL(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        p->invSelect--;
+
+        if(p->invSelect < 0)
+            p->invSelect = 5;
+    }
+}
+auto Player::invScrollR(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        p->invSelect++;
+
+        if(p->invSelect > 5)
+            p->invSelect = 0;
+    }
+}
