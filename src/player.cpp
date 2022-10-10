@@ -20,13 +20,14 @@ Player::Player() : texture(0) {
         Rendering::Rectangle{ {0, 0}, {PLAYER_SIZE, PLAYER_SIZE} }
     );
 
+    ui = create_scopeptr<UI>(*this);
+
     rot = 0.0f;
     pos = glm::vec3(1024 + 8, 0, 1024 + 8);
 
-    immortal = false;
-
     hp = base_hp = 100;
     energy = base_energy = 100;
+    xp = 10;
 }
 
 Player::~Player() {
@@ -48,6 +49,7 @@ auto Player::update(World* wrld, double dt) -> void {
     camera->pos.x += sinf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
     camera->pos.z += cosf(degtorad(rot)) * 6.0f * PLAYER_SIZE;
     camera->rot.y = degtorad(-rot);
+    Rendering::RenderContext::get().set_mode_3D();
     camera->update();
 }
 
@@ -58,4 +60,9 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_translate({ (-0.5f) * PLAYER_SIZE, 0, 0 });
 
     character->draw();
+
+    Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
+    Rendering::RenderContext::get().set_mode_2D();
+    Rendering::RenderContext::get().matrix_clear();
+    ui->draw();
 }

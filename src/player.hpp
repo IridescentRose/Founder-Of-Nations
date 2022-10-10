@@ -4,6 +4,7 @@
 #include <Graphics/2D/Sprite.hpp>
 #include "entity.hpp"
 #include "world.hpp"
+#include "ui.hpp"
 
 using namespace Stardust_Celeste;
 
@@ -37,5 +38,6 @@ public:
 private:
 	ScopePtr<Rendering::Camera> camera;
 	ScopePtr<Graphics::G2D::Sprite> character;
+	ScopePtr<UI> ui;
 	u32 texture;
 };
