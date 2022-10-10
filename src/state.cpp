@@ -34,7 +34,8 @@ auto GameState::on_start() -> void {
     Input::add_controller(psp_controller);
     Input::add_controller(key_controller);
 
-
+    tick_timer = 0.0f;
+    
 #ifndef PSP
     glfwSwapInterval(1);
 #endif
@@ -45,11 +46,16 @@ auto GameState::on_cleanup() -> void {
 }
 
 auto GameState::on_update(Core::Application *app, double dt) -> void {
-    //TODO: SEPARATE LOGIC FROM DRAW
     Utilities::Input::update();
 
     player->update(world.get(), dt);
     world->update(dt);
+
+    tick_timer += dt;
+    if(tick_timer > 0.25f){
+        tick_timer = 0.0f;
+        world->tick();
+    }
 }
 
 auto GameState::on_draw(Core::Application *app, double dt) -> void {

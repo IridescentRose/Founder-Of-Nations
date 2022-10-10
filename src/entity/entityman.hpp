@@ -11,6 +11,7 @@ class EntityManager final {
 
     auto create_random_slime(glm::vec3 pos) -> void;
 
+    auto tick(World* wrld) -> void;
     auto update(World* wrld, double dt) -> void;
     auto draw() -> void;
 
@@ -22,4 +23,6 @@ class EntityManager final {
     RefPtr<Graphics::G2D::Sprite> slimeSprites[4];
 
     u32 ecount;
+
+    u32 mobCap;
 };

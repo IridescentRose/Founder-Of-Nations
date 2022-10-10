@@ -7,7 +7,6 @@ World::World(RefPtr<Player> player) {
     tree_texture = Rendering::TextureManager::get().load_texture("./assets/trees.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
 
     eman = create_scopeptr<EntityManager>(player);
-    eman->create_random_slime({1024, 0, 1024});
 
     NoiseUtil::initialize();
 
@@ -106,4 +105,8 @@ auto World::draw() -> void {
     }
 
     eman->draw();
+}
+
+auto World::tick() -> void {
+    eman->tick(this);
 }

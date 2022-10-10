@@ -1,6 +1,7 @@
 #include "entityman.hpp"
 #include "../entity/enemy.hpp"
 #include "../entity/slime.hpp"
+#include "../world/tiles.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
     player = p;
@@ -13,6 +14,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     }
 
     ecount = 0;
+    mobCap = 4;
 }
 EntityManager::~EntityManager() {
     entities.clear();
@@ -20,7 +22,7 @@ EntityManager::~EntityManager() {
 
 
 auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
-    srand(time(NULL));
+    srand(time(NULL) + ecount);
     u8 r = rand() % 4;
 
     entities.emplace(
@@ -31,18 +33,63 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     entities[ecount]->atk += r * 3;
     entities[ecount]->def += r * 2;
     entities[ecount]->pos = pos;
+    entities[ecount]->base_hp = 10 + r * 5;
+    entities[ecount]->hp = entities[ecount]->base_hp;
 
     ecount++;
 }
 
 auto EntityManager::update(World* wrld, double dt) -> void {
+    std::vector<u32> ids;
+
     for(auto& [id, e] : entities) {
-        e->update_enemy(wrld, dt, player->pos);
+        auto diff = e->pos - player->pos;
+        auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+        if(len > 48) {
+            ids.push_back(id);
+        } else if(e->hp == 0) {
+            ids.push_back(id);
+        } else {
+            e->update_enemy(wrld, dt, player->pos);
+        }
+    }
+
+    for(auto& id : ids) {
+        entities.erase(id);
     }
 }
 
 auto EntityManager::draw() -> void {
     for(auto& [id, e] : entities) {
         e->draw(player->rot);
+    }
+}
+
+auto EntityManager::tick(World* wrld) -> void {
+    if(mobCap > 0){
+
+        for(int attempts = 30; attempts > 0; attempts--) {
+            int x = rand() % 12;
+            x -= 6;
+            int z = rand() % 12;
+            z -= 6;
+
+
+            auto nPos = player->pos;
+            nPos.x += x * 7;
+            nPos.y = 0;
+            nPos.z += z * 7;
+
+            auto t = wrld->get_tile({nPos.x, nPos.z});
+            auto l = wrld->get_tile2({nPos.x, nPos.z});
+
+            if(t != Tile::Water_Heavy && t != Tile::Water_Light && t != Tile::Stone && t != Tile::Stone_Coal && l != 1) {
+                create_random_slime(nPos);
+                mobCap--;
+                break;
+            }
+        }
+
     }
 }

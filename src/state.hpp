@@ -18,10 +18,12 @@ class GameState final : public Core::ApplicationState {
     auto on_draw(Core::Application *app, double dt) -> void;
 
     private:
-        ScopePtr<World> world;
-        RefPtr<Player> player;
+    ScopePtr<World> world;
+    RefPtr<Player> player;
 
     Utilities::Controller *psp_controller;
     Utilities::Controller *key_controller;
     Utilities::Controller *mouse_controller;
+
+    float tick_timer;
 };

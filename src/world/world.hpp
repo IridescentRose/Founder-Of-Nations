@@ -21,6 +21,8 @@ class World final {
     auto update(double dt) -> void;
     auto draw() -> void;
 
+    auto tick() -> void;
+
     auto get_tile(glm::ivec2 pos)->uint8_t;
     auto get_tile2(glm::ivec2 pos)->uint8_t;
 
