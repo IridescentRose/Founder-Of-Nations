@@ -1,5 +1,5 @@
 #include "player.hpp"
-#include "tiles.hpp"
+#include "../world/tiles.hpp"
 
 Player::Player() : texture(0) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/char.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);

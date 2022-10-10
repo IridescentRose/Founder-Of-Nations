@@ -1,7 +1,7 @@
 #pragma once 
 #include <Stardust-Celeste.hpp>
-#include "world.hpp"
-#include "player.hpp"
+#include "world/world.hpp"
+#include "player/player.hpp"
 
 using namespace Stardust_Celeste;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../ext/FNL/Cpp/FastNoiseLite.h"
+#include "../../ext/FNL/Cpp/FastNoiseLite.h"
 #include <cstdint>
 
 namespace NoiseUtil {

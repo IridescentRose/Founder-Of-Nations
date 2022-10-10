@@ -2,8 +2,8 @@
 #include <Stardust-Celeste.hpp>
 #include <Rendering/Camera.hpp>
 #include <Graphics/2D/Sprite.hpp>
-#include "entity.hpp"
-#include "world.hpp"
+#include "../entity/entity.hpp"
+#include "../world/world.hpp"
 #include "ui.hpp"
 
 using namespace Stardust_Celeste;

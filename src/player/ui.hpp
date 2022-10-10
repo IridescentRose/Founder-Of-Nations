@@ -4,7 +4,7 @@
 #include <Rendering/Camera.hpp>
 #include <Graphics/2D/Sprite.hpp>
 #include <Graphics/2D/FontRenderer.hpp>
-#include "entity.hpp"
+#include "../entity/entity.hpp"
 
 using namespace Stardust_Celeste;
 

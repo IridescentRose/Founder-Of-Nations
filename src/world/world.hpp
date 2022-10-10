@@ -2,8 +2,8 @@
 #include <Stardust-Celeste.hpp>
 #include <Graphics/2D/AnimatedTilemap.hpp>
 #include "chunk.hpp"
-#include "player.hpp"
-#include "slime.hpp"
+#include "../player/player.hpp"
+#include "../entity/slime.hpp"
 #include <map>
 
 class Player;
