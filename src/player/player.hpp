@@ -1,7 +1,7 @@
 #pragma once
 #include <Stardust-Celeste.hpp>
 #include <Rendering/Camera.hpp>
-#include <Graphics/2D/Sprite.hpp>
+#include <Graphics/2D/AnimatedSprite.hpp>
 #include "../entity/entity.hpp"
 #include "../world/world.hpp"
 #include "ui.hpp"
@@ -40,8 +40,9 @@ public:
 	float rot;
 	RefPtr<Inventory> inventory;
 private:
+	bool facing;
 	ScopePtr<Rendering::Camera> camera;
-	ScopePtr<Graphics::G2D::Sprite> character;
+	ScopePtr<Graphics::G2D::AnimatedSprite> character;
 	ScopePtr<UI> ui;
 	u32 texture;
 	s32 invSelect;
