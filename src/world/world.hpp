@@ -20,15 +20,19 @@ class World final {
 
     auto update(double dt) -> void;
     auto draw() -> void;
-
     auto tick() -> void;
 
-    auto get_tile(glm::ivec2 pos)->uint8_t;
-    auto get_tile2(glm::ivec2 pos)->uint8_t;
+    auto get_tile(glm::ivec2 pos) -> uint8_t;
+    auto get_tile2(glm::ivec2 pos) -> uint8_t;
+    auto set_tile(glm::ivec2 pos, uint8_t type) -> void;
+    auto set_tile2(glm::ivec2 pos, uint8_t type) -> void;
 
     ScopePtr<EntityManager> eman;
     
-    private:
+    private:    
+    uint32_t ticks;
+    uint32_t lightLevel;
+    uint32_t lastLevel;
     auto update_chunks() -> void;
     u32 terrain_texture, tree_texture;
     std::map<u32, Chunk*> mapData;

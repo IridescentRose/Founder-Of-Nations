@@ -75,14 +75,14 @@ auto Player::hit(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
     if (p != nullptr) {
-        if(!p->swing && p->energy > 10){
+        if(!p->swing && p->energy > 15){
             p->swingTimer = 1.25f / 2.0f;
             p->swing = true;
             p->triggerHit = true;
             if(p->inventory->get_slot(p->invSelect).itemID == Item::Sword){
-                p->energy -= 5;
+                p->energy -= 7;
             } else {
-                p->energy -= 10;
+                p->energy -= 15;
             }
         }
     }

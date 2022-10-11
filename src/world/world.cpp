@@ -11,12 +11,15 @@ World::World(RefPtr<Player> player) {
     NoiseUtil::initialize();
 
     update_chunks();    
+
+    lightLevel = 15;
+    lastLevel = lightLevel;
+    ticks = 0;
 }
 
 World::~World() {
 
 }
-
 
 auto World::get_tile(glm::ivec2 pos)-> uint8_t {
     u16 cX = pos.x / CHUNK_SIZE_X;
@@ -51,6 +54,37 @@ auto World::get_tile2(glm::ivec2 pos)-> uint8_t {
     return 255;
 }
 
+auto World::set_tile(glm::ivec2 pos, uint8_t type) -> void {
+    u16 cX = pos.x / CHUNK_SIZE_X;
+    u16 cZ = pos.y / CHUNK_SIZE_Y;
+    u32 id = ((u16)(cX) << 16) | ((u16)(cZ) & 0x0FF);
+
+    if (mapData.find(id) != mapData.end()) {
+        auto chunk = mapData[id];
+        u16 localX = pos.x - cX * CHUNK_SIZE_X;
+        u16 localZ = pos.y - cZ * CHUNK_SIZE_Y;
+
+        u32 idx = localX + localZ * CHUNK_SIZE_X;
+        chunk->tiles[idx] = type;
+        chunk->generate_mesh_data();
+    }
+}
+
+auto World::set_tile2(glm::ivec2 pos, uint8_t type) -> void {
+    u16 cX = pos.x / CHUNK_SIZE_X;
+    u16 cZ = pos.y / CHUNK_SIZE_Y;
+    u32 id = ((u16)(cX) << 16) | ((u16)(cZ) & 0x0FF);
+
+    if (mapData.find(id) != mapData.end()) {
+        auto chunk = mapData[id];
+        u16 localX = pos.x - cX * CHUNK_SIZE_X;
+        u16 localZ = pos.y - cZ * CHUNK_SIZE_Y;
+
+        u32 idx = localX + localZ * CHUNK_SIZE_X;
+        chunk->layer2[idx] = type;
+    }
+}
+
 auto World::update_chunks() -> void {
     auto pos = player->pos;
     auto ivec = glm::ivec2(pos.x / (float)CHUNK_SIZE_X, pos.z / (float)CHUNK_SIZE_Y);
@@ -82,7 +116,7 @@ auto World::update_chunks() -> void {
     for (auto& v : needed) {
         u32 id = (u16)(v.x) << 16 | (((u16)v.y) & 0x0FF);
 
-        auto chunk = new Chunk(v.x, v.y, terrain_texture, tree_texture);
+        auto chunk = new Chunk(v.x, v.y, terrain_texture, tree_texture, lightLevel);
         chunk->generate_tile_data();
         chunk->generate_mesh_data();
         mapData.emplace(id, chunk);
@@ -108,6 +142,46 @@ auto World::draw() -> void {
 }
 
 auto World::tick() -> void {
+    ticks += 2;
+
+    //2400 is full cycle
+    auto daytime = ticks % 2400;
+
+    if (daytime >= 0 && daytime < 200) {
+        //Morning, getting brighter
+        lightLevel = 11 + daytime / 50;
+    }
+    else if (daytime >= 200 && daytime < 1000) {
+        //Day, constant brightness
+        lightLevel = 15;
+    }
+    else if (daytime >= 1000 && daytime < 1400) {
+        //Evening/Twilight, getting darker
+        lightLevel = 15 - (daytime - 1000) / 50;
+    }
+    else if (daytime >= 1400 && daytime < 2200) {
+        //Night, constant brightness
+        lightLevel = 7;
+    } 
+    else if (daytime >= 2200 && daytime < 2400) {
+        //Morning, getting brighter
+        lightLevel = 7 + (daytime - 2200) / 50;
+    }
+    else {
+        //Invalid -- day brightness
+        lightLevel = 15;
+    }
+
+    if (lastLevel != lightLevel) {
+        lastLevel = lightLevel;
+        //Update Chunk Lighting;
+
+        for (auto& [id, chk] : mapData) {
+            chk->update_lighting(lightLevel);
+        }
+    }
+
+
     player->tick();
     eman->tick(this);
 }

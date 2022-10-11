@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include "../world/tiles.hpp"
+#include <gtx/rotate_vector.hpp>
 
 Player::Player() : texture(0), invSelect(0) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/charsheet.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
@@ -54,6 +55,81 @@ auto Player::update(World* wrld, double dt) -> void {
         triggerHit = false;
         //HIT
         wrld->eman->player_hit();
+
+        //CHECK BLOCK HIT & TOOL
+        glm::vec3 norm_vec(-1.0f, 0.0f, 0.0f);
+
+        if (facing) {
+            norm_vec = glm::rotateY(norm_vec, degtorad(rot + 180.0f));
+        }
+        else {
+            norm_vec = glm::rotateY(norm_vec, degtorad(rot));
+        }
+
+        for (int i = 0; i < 50; i++) {
+            auto test_vec = pos;
+            test_vec += norm_vec * (float)i / 20.0f;
+            auto t = (int)wrld->get_tile({ test_vec.x, test_vec.z });
+            auto l = (int)wrld->get_tile2({ test_vec.x, test_vec.z });
+
+            auto tool = inventory->get_slot(invSelect);
+            if (tool.itemID == Item::Axe && l == Decorations::Tree) {
+                wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
+                
+                //TODO: Drop Resources
+                break;
+            }
+            else if (tool.itemID == Item::Pickaxe && t == Tile::Stone) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+
+                //TODO: Drop Resources
+                break;
+            }
+            else if (tool.itemID == Item::Pickaxe && t == Tile::Stone_Coal) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+
+                //TODO: Drop Resources
+                break;
+            }
+            else if (tool.itemID == Item::Shovel && t == Tile::Sand) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+
+                //TODO: Drop Resources
+                break;
+            }
+            else if (tool.itemID == Item::Hoe && t == Tile::Grass) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
+                //TODO: Drop Resources
+
+                break;
+            }
+            else if (l == Decorations::Tallgrass) {
+                wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
+                //TODO: Drop Resources
+
+                break;
+            }
+            else if (l == Decorations::Flower) {
+                wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
+                //TODO: Drop Resources
+
+                break;
+            }
+            else if (l == Decorations::Bush) {
+                wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
+                
+                //TODO: Drop Resources
+                break;
+            }
+            else if (tool.itemID == Item::Shovel && t == Tile::Grass) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+                break;
+            }
+            else if (tool.itemID == Item::Hoe && t == Tile::Dirt) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
+                break;
+            }
+        }
     }
 
     character->update(dt);
@@ -94,7 +170,12 @@ auto Player::update(World* wrld, double dt) -> void {
         }
     } else {
         swingTimer -= dt;
-        character->set_animation_range(43, 47);
+        if (item.itemID == Item::Sword) {
+            character->set_animation_range(43, 47);
+        }
+        else {
+            character->set_animation_range(50, 54);
+        }
         character->ticksPerSec = 8.0f;
 
         if(swingTimer <= 0) {
@@ -127,6 +208,7 @@ auto Player::draw() -> void {
     
     Rendering::RenderContext::get().matrix_translate({ -50*0.75f, 0, 0 });
     character->draw();
+
     glEnable(GL_CULL_FACE);
 
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);

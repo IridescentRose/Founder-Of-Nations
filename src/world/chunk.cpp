@@ -1,7 +1,7 @@
 #include "chunk.hpp"
 #include "generator.hpp"
 
-Chunk::Chunk(int cx, int cy, u32 terrain, u32 tree) : cX(cx), cY(cy) {
+Chunk::Chunk(int cx, int cy, u32 terrain, u32 tree, u32 level) : cX(cx), cY(cy) {
     tmap = create_scopeptr<G2D::AnimatedTilemap>(
         terrain,
         glm::vec2{16, 16});
@@ -21,6 +21,8 @@ Chunk::Chunk(int cx, int cy, u32 terrain, u32 tree) : cX(cx), cY(cy) {
         biome[i] = 0;
         layer2[i] = 0;
     }
+
+    lightLevel = level;
 }
 
 auto Chunk::update(float dt) -> void {
@@ -72,22 +74,49 @@ auto get_tile_data(uint8_t id, uint8_t biome) -> TileData {
     case Tile::Ore_Crystal:
         return {101, 1};
 
+    case Tile::Farmland:
+        return { 5, 1 };
+    case Tile::Farmland1:
+        return { 6, 1 };
+    case Tile::Farmland2:
+        return { 7, 1 };
+    case Tile::Farmland3:
+        return { 8, 1 };
+    case Tile::Farmland4:
+        return { 9, 1 };
+
     default:
         return {id, 1};
     }
 }
 
-auto create_tile(uint8_t id, uint8_t biome, glm::vec2 pos) -> G2D::AnimatedTile {
+auto create_tile(uint8_t id, uint8_t biome, glm::vec2 pos, uint32_t level) -> G2D::AnimatedTile {
     auto data = get_tile_data(id, biome);
+
+    auto col = 16 * level + level;
+
+    Rendering::Color color;
+    color.rgba.r = col;
+    color.rgba.g = col;
+    color.rgba.b = col;
+    color.rgba.a = 255;
+
     return Graphics::G2D::AnimatedTile {
         Rendering::Rectangle{glm::vec2{pos.x * TILE_SIZE, pos.y * TILE_SIZE},
                              glm::vec2{TILE_SIZE, TILE_SIZE}},
-        Rendering::Color { 0xFF, 0xFF, 0xFF, 0xFF },
+        color,
         data.start_frame,
         0.0f,
         data.start_frame,
         data.frame_count,
     };
+}
+
+
+auto Chunk::update_lighting(uint32_t level) -> void {
+    lightLevel = level;
+
+    generate_mesh_data();
 }
 
 auto Chunk::generate_tile_data() -> void {
@@ -100,7 +129,7 @@ auto Chunk::generate_mesh_data() -> void {
     for (int x = 0; x < CHUNK_SIZE_X; x++)
         for (int y = 0; y < CHUNK_SIZE_Y; y++) {
             auto idx = x + y * CHUNK_SIZE_X;
-            tmap->add_tile(create_tile(tiles[idx], biome[idx], {x, y}));
+            tmap->add_tile(create_tile(tiles[idx], biome[idx], {x, y}, lightLevel));
         }
 
     tmap->generate_map();
@@ -123,6 +152,15 @@ auto Chunk::draw(float rot) -> void {
 #ifndef PSP
     glFrontFace(GL_CCW);
 #endif
+
+
+    auto col = 16 * lightLevel + lightLevel;
+
+    Rendering::Color color;
+    color.rgba.r = col;
+    color.rgba.g = col;
+    color.rgba.b = col;
+    color.rgba.a = 255;
     
     for(uint32_t y = 0; y < CHUNK_SIZE_X; y++){
         for(uint32_t x = 0; x < CHUNK_SIZE_Y; x++){
@@ -130,61 +168,19 @@ auto Chunk::draw(float rot) -> void {
             auto t = layer2[idx];
             if (t != 0) {
                 auto b = biome[idx];
-                if (t == 1) {
-                    if (b < 4) {
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(
-                            glm::vec3(
-                                cX * TILE_SIZE * CHUNK_SIZE_X + ((float)x + 0.5f) * TILE_SIZE,
-                                0,
-                                cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)y + 0.5f) * TILE_SIZE)
-                        );
-                        Rendering::RenderContext::get().matrix_rotate({ 0, rot, 0 });
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
-                        flora[b]->draw();
-                    }
-                }
-                if (t == 2) {
-                    if (b < 4) {
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(
-                            glm::vec3(
-                                cX * TILE_SIZE * CHUNK_SIZE_X + ((float)x + 0.5f) * TILE_SIZE,
-                                0,
-                                cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)y + 0.5f) * TILE_SIZE)
-                        );
-                        Rendering::RenderContext::get().matrix_rotate({ 0.0f, rot, 0 });
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
-                        flora[b + 4]->draw();
-                    }
-                }
-                if (t == 3) {
-                    if (b < 4) {
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(
-                            glm::vec3(
-                                cX * TILE_SIZE * CHUNK_SIZE_X + ((float)x + 0.5f) * TILE_SIZE,
-                                0,
-                                cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)y + 0.5f) * TILE_SIZE)
-                        );
-                        Rendering::RenderContext::get().matrix_rotate({ 0.0f, rot, 0 });
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
-                        flora[b + 8]->draw();
-                    }
-                }
-                if (t == 5) {
-                    if (b < 4) {
-                        Rendering::RenderContext::get().matrix_clear();
-                        Rendering::RenderContext::get().matrix_translate(
-                            glm::vec3(
-                                cX * TILE_SIZE * CHUNK_SIZE_X + ((float)x + 0.5f) * TILE_SIZE,
-                                0,
-                                cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)y + 0.5f) * TILE_SIZE)
-                        );
-                        Rendering::RenderContext::get().matrix_rotate({ 0.0f, rot, 0 });
-                        Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
-                        flora[b + 12]->draw();
-                    }
+
+                if (b < 4) {
+                    Rendering::RenderContext::get().matrix_clear();
+                    Rendering::RenderContext::get().matrix_translate(
+                        glm::vec3(
+                            cX * TILE_SIZE * CHUNK_SIZE_X + ((float)x + 0.5f) * TILE_SIZE,
+                            0,
+                            cY * TILE_SIZE * CHUNK_SIZE_Y + ((float)y + 0.5f) * TILE_SIZE)
+                    );
+                    Rendering::RenderContext::get().matrix_rotate({ 0, rot, 0 });
+                    Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
+                    flora[b + (t - 1) * 4]->set_color(color);
+                    flora[b + (t - 1) * 4]->draw();
                 }
             }
         }

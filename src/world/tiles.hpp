@@ -20,6 +20,11 @@ namespace Tile {
     const uint8_t Ore_Iron = 15;
     const uint8_t Ore_Gold = 16;
     const uint8_t Ore_Crystal = 17;
+    const uint8_t Farmland = 18;
+    const uint8_t Farmland1 = 19;
+    const uint8_t Farmland2 = 20;
+    const uint8_t Farmland3 = 21;
+    const uint8_t Farmland4 = 22;
 }
 
 namespace Biome {
@@ -34,6 +39,7 @@ namespace Biome {
 }
 
 namespace Decorations {
+    const uint8_t None = 0;
     const uint8_t Tree = 1;
     const uint8_t Flower = 2;
     const uint8_t Tallgrass = 3;
