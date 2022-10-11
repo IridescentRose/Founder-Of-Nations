@@ -1,23 +1,34 @@
 #include "entityman.hpp"
 #include "../entity/enemy.hpp"
+#include "../entity/drop.hpp"
 #include "../entity/slime.hpp"
 #include "../world/tiles.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
     player = p;
     entities.clear();
+    drops.clear();
 
     slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
+    itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 
     for(int i = 0; i < 4; i++){
         slimeSprites[i] = create_refptr<Graphics::G2D::Sprite>(slimeTex, Rendering::Rectangle{ {0, 0}, {32, 32} }, Rendering::Rectangle{ {0.0f + 0.25f * i, 0.0f}, {0.25f, 1.0f} });
     }
 
+	for(int i = 0; i < 64; i++) {
+		items[i] = create_scopeptr<Graphics::G2D::Sprite>(itemID,
+		Rendering::Rectangle{ {0, 0}, {16, 16} },
+		Rendering::Rectangle{ {0.125f * static_cast<float>(i % 8), 0.125f * static_cast<float>((i / 8) + 1) }, {16.0f / 128.0f, -16.0f / 128.0f} });
+	}
+
     ecount = 0;
+    icount = 0;
     mobCap = 6;
 }
 EntityManager::~EntityManager() {
     entities.clear();
+    drops.clear();
 }
 
 
@@ -39,6 +50,23 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     ecount++;
 }
 
+
+auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uint16_t random) -> void {
+    if (item == 0)
+        return;
+
+    srand(time(NULL) + icount);
+    uint16_t r = rand() % random;
+
+    drops.emplace(
+        icount,
+        create_refptr<ItemDrop>(items[item - 1])
+    );
+    drops[icount]->itemData = Slot{item, static_cast<uint16_t>(count + r)};
+    drops[icount]->pos = pos;
+
+    icount++;
+}
 
 
 auto EntityManager::player_hit() -> void{
@@ -87,10 +115,32 @@ auto EntityManager::update(World* wrld, double dt) -> void {
     for(auto& id : ids) {
         entities.erase(id);
     }
+
+    ids.clear();
+
+    for(auto& [id, e] : drops) {
+        auto diff = e->pos - player->pos;
+        auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+        e->update_drop(wrld, dt, player->pos);
+
+        if(len < 0.5f) {
+            ids.push_back(id);
+            //TODO: ADD TO INVENTORY
+        }
+    }
+
+    for(auto& id : ids) {
+        drops.erase(id);
+    }
 }
 
 auto EntityManager::draw() -> void {
     for(auto& [id, e] : entities) {
+        e->draw(player->rot);
+    }
+    
+    for(auto& [id, e] : drops) {
         e->draw(player->rot);
     }
 }

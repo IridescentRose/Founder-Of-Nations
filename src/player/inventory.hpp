@@ -12,11 +12,19 @@ namespace Item {
     const uint8_t Wheat = 6;
     const uint8_t Bread = 7;
     const uint8_t Apple = 8;
+    const uint8_t Stone = 9;
+    const uint8_t Coal = 10;
+    const uint8_t Log = 11;
+    const uint8_t Acorn = 12;
+    const uint8_t Seed = 13;
+    const uint8_t Sand = 14;
+
+    const uint8_t GoldenApple = 16;
 }
 
 struct Slot {
     uint8_t itemID;
-    uint8_t count;
+    uint16_t count;
 };
 
 class Inventory final {

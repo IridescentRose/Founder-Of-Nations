@@ -68,57 +68,56 @@ auto Player::update(World* wrld, double dt) -> void {
 
         for (int i = 0; i < 50; i++) {
             auto test_vec = pos;
-            test_vec += norm_vec * (float)i / 20.0f;
+            test_vec += norm_vec * (float)i / 25.0f;
             auto t = (int)wrld->get_tile({ test_vec.x, test_vec.z });
             auto l = (int)wrld->get_tile2({ test_vec.x, test_vec.z });
 
             auto tool = inventory->get_slot(invSelect);
             if (tool.itemID == Item::Axe && l == Decorations::Tree) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                
-                //TODO: Drop Resources
+                wrld->eman->create_drop(test_vec, Item::Log, 2, 3);
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
 
-                //TODO: Drop Resources
+                wrld->eman->create_drop(test_vec, Item::Stone, 2, 3);
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone_Coal) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
 
-                //TODO: Drop Resources
+                wrld->eman->create_drop(test_vec, Item::Coal, 1, 1);
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Sand) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
 
-                //TODO: Drop Resources
+                wrld->eman->create_drop(test_vec, Item::Sand, 1, 2);
                 break;
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
-                //TODO: Drop Resources
 
+                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 break;
             }
             else if (l == Decorations::Tallgrass) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                //TODO: Drop Resources
 
+                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 break;
             }
             else if (l == Decorations::Flower) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                //TODO: Drop Resources
 
+                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 break;
             }
             else if (l == Decorations::Bush) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                
-                //TODO: Drop Resources
+
+                wrld->eman->create_drop(test_vec, Item::Apple, 0, 1);
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Grass) {
@@ -163,7 +162,7 @@ auto Player::update(World* wrld, double dt) -> void {
             character->set_animation_range(9, 14);
         }else {
             if(item.itemID == Item::Sword) {
-                character->set_animation_range(38, 41);
+                character->set_animation_range(31, 34);
             } else {
                 character->set_animation_range(0, 3);
             }
