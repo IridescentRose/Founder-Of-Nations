@@ -132,6 +132,18 @@ auto Chunk::generate_mesh_data() -> void {
             tmap->add_tile(create_tile(tiles[idx], biome[idx], {x, y}, lightLevel));
         }
 
+
+    auto col = 16 * lightLevel + lightLevel;
+
+    Rendering::Color color;
+    color.rgba.r = col;
+    color.rgba.g = col;
+    color.rgba.b = col;
+    color.rgba.a = 255;
+    for (int i = 0; i < 16; i++) {
+        flora[i]->set_color(color);
+    }
+
     tmap->generate_map();
 }
 
@@ -152,15 +164,6 @@ auto Chunk::draw(float rot) -> void {
 #ifndef PSP
     glFrontFace(GL_CCW);
 #endif
-
-
-    auto col = 16 * lightLevel + lightLevel;
-
-    Rendering::Color color;
-    color.rgba.r = col;
-    color.rgba.g = col;
-    color.rgba.b = col;
-    color.rgba.a = 255;
     
     for(uint32_t y = 0; y < CHUNK_SIZE_X; y++){
         for(uint32_t x = 0; x < CHUNK_SIZE_Y; x++){
@@ -179,7 +182,6 @@ auto Chunk::draw(float rot) -> void {
                     );
                     Rendering::RenderContext::get().matrix_rotate({ 0, rot, 0 });
                     Rendering::RenderContext::get().matrix_translate({ (-0.5f) * TILE_SIZE, 0, 0 });
-                    flora[b + (t - 1) * 4]->set_color(color);
                     flora[b + (t - 1) * 4]->draw();
                 }
             }

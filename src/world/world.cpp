@@ -85,6 +85,11 @@ auto World::set_tile2(glm::ivec2 pos, uint8_t type) -> void {
     }
 }
 
+#define CHUNK_X_RANGE_MIN -2
+#define CHUNK_X_RANGE_MAX 2
+#define CHUNK_Z_RANGE_MIN -2
+#define CHUNK_Z_RANGE_MAX 2
+
 auto World::update_chunks() -> void {
     auto pos = player->pos;
     auto ivec = glm::ivec2(pos.x / (float)CHUNK_SIZE_X, pos.z / (float)CHUNK_SIZE_Y);
@@ -92,8 +97,8 @@ auto World::update_chunks() -> void {
     std::vector<glm::ivec2> needed;
     std::map<u32, Chunk*> existing_chunks;
 
-    for (int x = -2; x <= 2; x++) {
-        for (int z = -2; z <= 2; z++) {
+    for (int x = CHUNK_X_RANGE_MIN; x <= CHUNK_X_RANGE_MAX; x++) {
+        for (int z = CHUNK_Z_RANGE_MIN; z <= CHUNK_Z_RANGE_MAX; z++) {
             u32 id = ((u16)(ivec.x + x) << 16) | ((u16)(ivec.y + z) & 0x0FF);
 
             if (mapData.find(id) != mapData.end()) {
