@@ -27,6 +27,8 @@ public:
 	auto update(World* wrld, double dt) -> void;
 	auto draw() -> void;
 
+	auto tick() -> void override;
+
 	static auto move_up(std::any a) -> void;
 	static auto move_down(std::any a) -> void;
 	static auto move_left(std::any a) -> void;
@@ -42,6 +44,7 @@ public:
 	float rot;
 	RefPtr<Inventory> inventory;
 private:
+	bool triggerHit;
 	bool facing;
 	bool swing;
 	float swingTimer;

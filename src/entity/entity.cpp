@@ -12,7 +12,7 @@ auto Entity::tick() -> void {
     if(iframes > 0)
         iframes--;
     else {
-        hp++; //TODO: BETTER REGEN
+        hp += regen;
         if(hp > base_hp)
             hp = base_hp;
     }

@@ -26,11 +26,11 @@ class World final {
     auto get_tile(glm::ivec2 pos)->uint8_t;
     auto get_tile2(glm::ivec2 pos)->uint8_t;
 
+    ScopePtr<EntityManager> eman;
+    
     private:
-
     auto update_chunks() -> void;
     u32 terrain_texture, tree_texture;
     std::map<u32, Chunk*> mapData;
     RefPtr<Player> player;
-    ScopePtr<EntityManager> eman;
 };

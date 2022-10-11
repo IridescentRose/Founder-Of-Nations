@@ -31,13 +31,38 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     );
 
     entities[ecount]->atk += r * 3;
-    entities[ecount]->def += r * 2;
+    entities[ecount]->def += r;
     entities[ecount]->pos = pos;
-    entities[ecount]->base_hp = 10 + r * 5;
+    entities[ecount]->base_hp = 5 + r * 5;
     entities[ecount]->hp = entities[ecount]->base_hp;
 
     ecount++;
 }
+
+
+
+auto EntityManager::player_hit() -> void{
+    std::vector<u32> ids;
+
+    for(auto& [id, e] : entities) {
+        auto diff = e->pos - player->pos;
+        auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+        if(len < 2.5){
+            e->take_damage(player.get());
+            e->vel = diff * 5.0f;
+
+            if(e->hp <= 0){
+                ids.push_back(id);
+            }
+        }
+    }
+
+    for(auto& id : ids) {
+        entities.erase(id);
+    }
+}
+
 
 auto EntityManager::update(World* wrld, double dt) -> void {
     std::vector<u32> ids;

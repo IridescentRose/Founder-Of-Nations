@@ -28,8 +28,12 @@ Player::Player() : texture(0), invSelect(0) {
     pos = glm::vec3(1024 + 8, 0, 1024 + 8);
 
     hp = base_hp = 100;
+    regen = 2;
     energy = base_energy = 100;
     xp = 10;
+
+    atk = 8;
+    base_atk = 8;
 
     inventory = create_refptr<Inventory>();
 
@@ -46,6 +50,12 @@ Player::~Player() {
 }
 
 auto Player::update(World* wrld, double dt) -> void {
+    if(triggerHit){
+        triggerHit = false;
+        //HIT
+        wrld->eman->player_hit();
+    }
+
     character->update(dt);
 
     float len = sqrtf(acc.x * acc.x + acc.z * acc.z);
@@ -60,9 +70,9 @@ auto Player::update(World* wrld, double dt) -> void {
     Slot item = inventory->get_slot(invSelect);
     if(item.count > 0){
         if(item.itemID == Item::Sword) {
-            atk = base_atk * 1.5;
+            atk = base_atk * 1.75;
         } else if (item.itemID == Item::Axe) {
-            atk = base_atk * 1.25;
+            atk = base_atk * 1.5;
         } else {
             atk = base_atk;
         }
@@ -102,7 +112,6 @@ auto Player::update(World* wrld, double dt) -> void {
     Rendering::RenderContext::get().set_mode_3D();
     camera->update();
     
-
 }
 
 auto Player::draw() -> void {
@@ -124,4 +133,12 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().set_mode_2D();
     Rendering::RenderContext::get().matrix_clear();
     ui->draw(inventory);
+}
+
+
+auto Player::tick() -> void {
+    energy += 2; //TODO: ENERGY REGEN
+    if(energy > base_energy)
+        energy = base_energy;
+    Entity::tick();
 }

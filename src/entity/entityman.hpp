@@ -14,6 +14,7 @@ class EntityManager final {
     auto tick(World* wrld) -> void;
     auto update(World* wrld, double dt) -> void;
     auto draw() -> void;
+	auto player_hit() -> void;
 
     private:
     RefPtr<Player> player;
