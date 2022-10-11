@@ -138,6 +138,19 @@ auto Player::draw() -> void {
 
 auto Player::tick() -> void {
     energy += 2; //TODO: ENERGY REGEN
+
+    if(in_water){
+        if(energy > 3)
+            energy -= 3;
+        else 
+            energy = 0;
+    }
+
+    if(energy <= 0){
+        energy = 0;
+        hp -= 5;
+    }
+
     if(energy > base_energy)
         energy = base_energy;
     Entity::tick();

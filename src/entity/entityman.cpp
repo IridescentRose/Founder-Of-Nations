@@ -14,7 +14,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     }
 
     ecount = 0;
-    mobCap = 4;
+    mobCap = 6;
 }
 EntityManager::~EntityManager() {
     entities.clear();
@@ -48,7 +48,7 @@ auto EntityManager::player_hit() -> void{
         auto diff = e->pos - player->pos;
         auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
 
-        if(len < 2.5){
+        if(len < 1.75){
             e->take_damage(player.get());
             e->vel = diff * 5.0f;
 
