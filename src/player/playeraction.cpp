@@ -76,7 +76,13 @@ auto Player::hit(std::any a) -> void {
 
     if (p != nullptr) {
         if(!p->swing && p->energy > 15){
-            p->swingTimer = 1.25f / 2.0f;
+            if (p->inventory->get_slot(p->invSelect).itemID == Item::Bow) {
+                p->swingTimer = 2.25f / 2.0f;
+            }
+            else {
+                p->swingTimer = 1.25f / 2.0f;
+            }
+
             p->swing = true;
             p->triggerHit = true;
             if(p->inventory->get_slot(p->invSelect).itemID == Item::Sword){

@@ -39,11 +39,11 @@ Player::Player() : texture(0), invSelect(0) {
     inventory = create_refptr<Inventory>();
 
     inventory->set_slot(0, {Item::Sword, 1});
-    inventory->set_slot(1, {Item::Pickaxe, 1});
-    inventory->set_slot(2, {Item::Hoe, 1});
-    inventory->set_slot(3, {Item::Axe, 1});
-    inventory->set_slot(4, {Item::Shovel, 1});
-    inventory->set_slot(5, {Item::Berries, 4});
+    inventory->set_slot(1, {Item::Bow, 1});
+    inventory->set_slot(2, {Item::Pickaxe, 1});
+    inventory->set_slot(3, {Item::Hoe, 1});
+    inventory->set_slot(4, {Item::Axe, 1});
+    inventory->set_slot(5, {Item::Shovel, 1});
 }
 
 Player::~Player() {
@@ -54,7 +54,11 @@ auto Player::update(World* wrld, double dt) -> void {
     if(triggerHit){
         triggerHit = false;
         //HIT
-        wrld->eman->player_hit();
+        {
+            auto tool = inventory->get_slot(invSelect);
+            if (tool.itemID != Item::Bow)
+                wrld->eman->player_hit();
+        }
 
         //CHECK BLOCK HIT & TOOL
         glm::vec3 norm_vec(-1.0f, 0.0f, 0.0f);
@@ -73,6 +77,9 @@ auto Player::update(World* wrld, double dt) -> void {
             auto l = (int)wrld->get_tile2({ test_vec.x, test_vec.z });
 
             auto tool = inventory->get_slot(invSelect);
+            if (tool.itemID == Item::Bow)
+                break;
+
             if (tool.itemID == Item::Axe && l == Decorations::Tree) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Log, 2, 3);
@@ -175,8 +182,10 @@ auto Player::update(World* wrld, double dt) -> void {
         if (item.itemID == Item::Sword) {
             character->set_animation_range(43, 47);
         }
-        else {
-            character->set_animation_range(50, 54);
+        else if(item.itemID == Item::Bow) {
+            character->set_animation_range(49, 57);
+        } else {
+            character->set_animation_range(58, 62);
         }
         character->ticksPerSec = 8.0f;
 

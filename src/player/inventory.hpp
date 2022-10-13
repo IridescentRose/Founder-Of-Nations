@@ -20,6 +20,7 @@ namespace Item {
     const uint8_t Sand = 14;
 
     const uint8_t GoldenApple = 16;
+    const uint8_t Bow = 21;
 }
 
 struct Slot {

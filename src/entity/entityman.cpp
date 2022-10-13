@@ -240,7 +240,7 @@ auto EntityManager::tick(World* wrld) -> void {
             if(t != Tile::Water_Heavy && t != Tile::Water_Light && t != Tile::Stone && t != Tile::Stone_Coal && l != 1) {
                 int r = rand() % 2;
                 
-                if(wrld->get_light_level() < 8) {
+                if(wrld->get_light_level() > 8) {
                     create_random_slime(nPos);
                 } else {
                     if(r == 0) 
