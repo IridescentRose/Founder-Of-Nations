@@ -58,6 +58,17 @@ auto Player::update(World* wrld, double dt) -> void {
             auto tool = inventory->get_slot(invSelect);
             if (tool.itemID != Item::Bow)
                 wrld->eman->player_hit();
+            else {
+                glm::vec3 norm_vec(-1.0f, 0.0f, 0.0f);
+                if (facing) {
+                    norm_vec = glm::rotateY(norm_vec, degtorad(rot + 180.0f));
+                }
+                else {
+                    norm_vec = glm::rotateY(norm_vec, degtorad(rot));
+                }
+                norm_vec *= 8;
+                wrld->eman->player_arrow(facing, pos, norm_vec + vel, atk * 2);
+            }
         }
 
         //CHECK BLOCK HIT & TOOL

@@ -1,9 +1,10 @@
 #include "entityman.hpp"
-#include "../entity/beholder.hpp"
-#include "../entity/drop.hpp"
-#include "../entity/enemy.hpp"
-#include "../entity/slime.hpp"
-#include "../entity/spider.hpp"
+#include "beholder.hpp"
+#include "drop.hpp"
+#include "enemy.hpp"
+#include "slime.hpp"
+#include "spider.hpp"
+#include "arrow.hpp"
 #include "../world/tiles.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
@@ -14,7 +15,10 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     beholderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/beholder.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     spiderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/spider.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
+    arrowTex = Rendering::TextureManager::get().load_texture("./assets/arrow.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
+
+    arrowSprite = create_refptr<Graphics::G2D::Sprite>(arrowTex, Rendering::Rectangle{ {0,0}, {32, 32}});
 
     for(int i = 0; i < 4; i++){
         beholderSprites[i] = create_refptr<Graphics::G2D::Sprite>(beholderTex, Rendering::Rectangle{ {0, 0}, {64, 64} }, Rendering::Rectangle{ {0.0f + 0.25f * i, 0.0f}, {0.25f, 1.0f} });
@@ -28,6 +32,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
 		Rendering::Rectangle{ {0.125f * static_cast<float>(i % 8), 0.125f * static_cast<float>((i / 8) + 1) }, {16.0f / 128.0f, -16.0f / 128.0f} });
 	}
 
+    acount = 0;
     ecount = 0;
     icount = 0;
     mobCap = totalCap = 5;
@@ -37,6 +42,19 @@ EntityManager::~EntityManager() {
     drops.clear();
 }
 
+
+auto EntityManager::player_arrow(bool facing, glm::vec3 pos, glm::vec3 vel, uint32_t arrowATK) -> void {
+    arrows.emplace(
+        acount,
+        create_refptr<ArrowEntity>(arrowSprite, vel)
+    );
+    arrows[acount]->pos = pos;
+    arrows[acount]->vel = vel;
+    arrows[acount]->atk = arrowATK;
+    arrows[acount]->facing = facing;
+
+    acount++;
+}
 
 auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     srand(time(NULL) + ecount);
@@ -100,7 +118,6 @@ auto EntityManager::create_random_spider(glm::vec3 pos) -> void {
         mobCap--;
     }
 }
-
 
 auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uint16_t random) -> void {
     if (item == 0)
@@ -194,14 +211,43 @@ auto EntityManager::update(World* wrld, double dt) -> void {
     for(auto& id : ids) {
         drops.erase(id);
     }
+
+    ids.clear();
+
+    for (auto& [id, a] : arrows) {
+        a->update_arrow(wrld, dt);
+        for (auto& [id2, e] : entities) {
+            auto diff = a->pos - e->pos;
+            auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+            if (len < 0.5f) {
+                e->take_damage(a.get());
+                ids.push_back(id);
+                break;
+            }
+
+            if (a->timer > 4.0f) {
+                ids.push_back(id);
+                break;
+            }
+        }
+    }
+
+    for (auto& id : ids) {
+        arrows.erase(id);
+    }
 }
 
 auto EntityManager::draw() -> void {
     for(auto& [id, e] : entities) {
         e->draw(player->rot);
     }
-    
-    for(auto& [id, e] : drops) {
+
+    for (auto& [id, e] : drops) {
+        e->draw(player->rot);
+    }
+
+    for (auto& [id, e] : arrows) {
         e->draw(player->rot);
     }
 }
