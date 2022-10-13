@@ -11,6 +11,9 @@ class EntityManager final {
     ~EntityManager();
 
     auto create_random_slime(glm::vec3 pos) -> void;
+    auto create_random_spider(glm::vec3 pos) -> void;
+    auto create_random_beholder(glm::vec3 pos) -> void;
+
     auto create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uint16_t random) -> void;
 
     auto tick(World* wrld) -> void;
@@ -22,15 +25,19 @@ class EntityManager final {
     RefPtr<Player> player;
     std::map<u32, RefPtr<Enemy>> entities;
     std::map<u32, RefPtr<ItemDrop>> drops;
-    
+
     u32 slimeTex;
     RefPtr<Graphics::G2D::Sprite> slimeSprites[4];
+    u32 spiderTex;
+    RefPtr<Graphics::G2D::Sprite> spiderSprites[4];
+    u32 beholderTex;
+    RefPtr<Graphics::G2D::Sprite> beholderSprites[4];
     u32 itemID;
     RefPtr<Graphics::G2D::Sprite> items[64];
 
     u32 ecount;
     u32 icount;
 
-    u32 mobCap;
+    s32 mobCap;
     u32 totalCap;
 };

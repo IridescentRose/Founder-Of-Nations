@@ -11,7 +11,7 @@ public:
 
     virtual auto update_enemy(World* wrld, double dt, glm::vec3 player_pos) -> void;
     auto draw(float rot) -> void;
-protected:
     float acceleration_speed;
+protected:
     RefPtr<Graphics::G2D::Sprite> sprt;
 };

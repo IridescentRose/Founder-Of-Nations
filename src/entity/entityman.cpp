@@ -1,7 +1,9 @@
 #include "entityman.hpp"
-#include "../entity/enemy.hpp"
+#include "../entity/beholder.hpp"
 #include "../entity/drop.hpp"
+#include "../entity/enemy.hpp"
 #include "../entity/slime.hpp"
+#include "../entity/spider.hpp"
 #include "../world/tiles.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
@@ -9,11 +11,15 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     entities.clear();
     drops.clear();
 
+    beholderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/beholder.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
+    spiderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/spider.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 
     for(int i = 0; i < 4; i++){
+        beholderSprites[i] = create_refptr<Graphics::G2D::Sprite>(beholderTex, Rendering::Rectangle{ {0, 0}, {64, 64} }, Rendering::Rectangle{ {0.0f + 0.25f * i, 0.0f}, {0.25f, 1.0f} });
         slimeSprites[i] = create_refptr<Graphics::G2D::Sprite>(slimeTex, Rendering::Rectangle{ {0, 0}, {32, 32} }, Rendering::Rectangle{ {0.0f + 0.25f * i, 0.0f}, {0.25f, 1.0f} });
+        spiderSprites[i] = create_refptr<Graphics::G2D::Sprite>(spiderTex, Rendering::Rectangle{ {0, 0}, {32, 32} }, Rendering::Rectangle{ {0.0f + 0.25f * i, 0.0f}, {0.25f, 1.0f} });
     }
 
 	for(int i = 0; i < 64; i++) {
@@ -24,7 +30,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
 
     ecount = 0;
     icount = 0;
-    mobCap = totalCap = 6;
+    mobCap = totalCap = 5;
 }
 EntityManager::~EntityManager() {
     entities.clear();
@@ -49,6 +55,50 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     entities[ecount]->xpval = r * 2 + 3;
 
     ecount++;
+    mobCap--;
+}
+
+auto EntityManager::create_random_beholder(glm::vec3 pos) -> void {
+    srand(time(NULL) + ecount);
+    u8 r = rand() % 4;
+
+    entities.emplace(
+        ecount,
+        create_refptr<Beholder>(beholderSprites[r])
+    );
+
+    entities[ecount]->atk += r * 5;
+    entities[ecount]->def += r * 2;
+    entities[ecount]->pos = pos;
+    entities[ecount]->base_hp = 10 + r * 6;
+    entities[ecount]->hp = entities[ecount]->base_hp;
+    entities[ecount]->xpval = r * 5 + 3;
+
+    ecount++;
+    mobCap--;
+}
+
+auto EntityManager::create_random_spider(glm::vec3 pos) -> void {
+    for (int i = 0; i < 3 && mobCap > 0; i++) {
+        srand(time(NULL) + ecount);
+        u8 r = rand() % 4;
+
+        entities.emplace(
+            ecount,
+            create_refptr<Spider>(spiderSprites[r])
+        );
+
+        entities[ecount]->atk += r;
+        entities[ecount]->def += r * 0.5f;
+        entities[ecount]->pos = pos;
+        entities[ecount]->base_hp = 3 + r * 4;
+        entities[ecount]->acceleration_speed += r * 4.0f;
+        entities[ecount]->hp = entities[ecount]->base_hp;
+        entities[ecount]->xpval = r * 1 + 2;
+
+        ecount++;
+        mobCap--;
+    }
 }
 
 
@@ -157,6 +207,19 @@ auto EntityManager::draw() -> void {
 }
 
 auto EntityManager::tick(World* wrld) -> void {
+    if (wrld->get_light_level() > 8) {
+        if (totalCap == 12) {
+            totalCap = 5;
+            mobCap = totalCap;
+        }
+    }
+    else {
+        if (totalCap == 5) {
+            totalCap = 12;
+            mobCap = totalCap;
+        }
+    }
+
     if(mobCap > 0){
 
         for(int attempts = 30; attempts > 0; attempts--) {
@@ -175,8 +238,16 @@ auto EntityManager::tick(World* wrld) -> void {
             auto l = wrld->get_tile2({nPos.x, nPos.z});
 
             if(t != Tile::Water_Heavy && t != Tile::Water_Light && t != Tile::Stone && t != Tile::Stone_Coal && l != 1) {
-                create_random_slime(nPos);
-                mobCap--;
+                int r = rand() % 2;
+                
+                if(wrld->get_light_level() < 8) {
+                    create_random_slime(nPos);
+                } else {
+                    if(r == 0) 
+                        create_random_spider(nPos);
+                    else
+                        create_random_beholder(nPos);
+                }
                 break;
             }
         }

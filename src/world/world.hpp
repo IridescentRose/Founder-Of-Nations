@@ -27,12 +27,16 @@ class World final {
     auto set_tile(glm::ivec2 pos, uint8_t type) -> void;
     auto set_tile2(glm::ivec2 pos, uint8_t type) -> void;
 
+    inline auto get_light_level() -> uint32_t {
+        return lightLevel;
+    }
+
     ScopePtr<EntityManager> eman;
-    
+
     private:    
     uint32_t ticks;
-    uint32_t lightLevel;
     uint32_t lastLevel;
+    uint32_t lightLevel;
     auto update_chunks() -> void;
     u32 terrain_texture, tree_texture;
     std::map<u32, Chunk*> mapData;
