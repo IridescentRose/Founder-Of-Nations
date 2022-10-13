@@ -148,13 +148,15 @@ auto WorldGen::generate(int cX, int cY, uint8_t *data, uint8_t *biome, uint8_t *
                 }else if (check > 1 && check <= 3){
                     data[idx] = Tile::Grass;
                     layer2[idx] = Decorations::Tallgrass; //TALL
-                }if (biome[idx] == Biome::Forest) {
+                } else if (biome[idx] == Biome::Forest) {
                     if (check > 5 && check <= 7){
                         data[idx] = Tile::Grass;
                         layer2[idx] = Decorations::Bush; //BUSH
-                    }else if (check == 8)
+                    }
+                    else if (check == 8) {
                         data[idx] = Tile::Grass;
                         layer2[idx] = Decorations::Bush; //BUSH
+                    }
                 } else if (check == 4) {
                         data[idx] = Tile::Grass;
                         layer2[idx] = Decorations::Bush; //BUSH

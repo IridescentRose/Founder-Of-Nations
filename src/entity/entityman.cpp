@@ -24,7 +24,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
 
     ecount = 0;
     icount = 0;
-    mobCap = 6;
+    mobCap = totalCap = 6;
 }
 EntityManager::~EntityManager() {
     entities.clear();
@@ -46,6 +46,7 @@ auto EntityManager::create_random_slime(glm::vec3 pos) -> void {
     entities[ecount]->pos = pos;
     entities[ecount]->base_hp = 5 + r * 5;
     entities[ecount]->hp = entities[ecount]->base_hp;
+    entities[ecount]->xpval = r * 2 + 3;
 
     ecount++;
 }
@@ -57,15 +58,17 @@ auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uin
 
     srand(time(NULL) + icount);
     uint16_t r = rand() % random;
+    uint16_t cnt = count + r;
 
-    drops.emplace(
-        icount,
-        create_refptr<ItemDrop>(items[item - 1])
-    );
-    drops[icount]->itemData = Slot{item, static_cast<uint16_t>(count + r)};
-    drops[icount]->pos = pos;
-
-    icount++;
+    if (cnt > 0) {
+        drops.emplace(
+            icount,
+            create_refptr<ItemDrop>(items[item - 1])
+        );
+        drops[icount]->itemData = Slot{ item, cnt };
+        drops[icount]->pos = pos;
+        icount++;
+    }
 }
 
 
@@ -88,6 +91,10 @@ auto EntityManager::player_hit() -> void{
 
     for(auto& id : ids) {
         entities.erase(id);
+        mobCap++;
+        if (mobCap > totalCap) {
+            mobCap = totalCap;
+        }
     }
 }
 
@@ -114,6 +121,10 @@ auto EntityManager::update(World* wrld, double dt) -> void {
 
     for(auto& id : ids) {
         entities.erase(id);
+        mobCap++;
+        if (mobCap > totalCap) {
+            mobCap = totalCap;
+        }
     }
 
     ids.clear();
@@ -125,8 +136,8 @@ auto EntityManager::update(World* wrld, double dt) -> void {
         e->update_drop(wrld, dt, player->pos);
 
         if(len < 0.5f) {
+            player->inventory->add_item(e->itemData);
             ids.push_back(id);
-            //TODO: ADD TO INVENTORY
         }
     }
 

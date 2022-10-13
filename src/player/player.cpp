@@ -43,7 +43,7 @@ Player::Player() : texture(0), invSelect(0) {
     inventory->set_slot(2, {Item::Hoe, 1});
     inventory->set_slot(3, {Item::Axe, 1});
     inventory->set_slot(4, {Item::Shovel, 1});
-    inventory->set_slot(5, {Item::Apple, 4});
+    inventory->set_slot(5, {Item::Berries, 4});
 }
 
 Player::~Player() {
@@ -76,56 +76,59 @@ auto Player::update(World* wrld, double dt) -> void {
             if (tool.itemID == Item::Axe && l == Decorations::Tree) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Log, 2, 3);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
-
                 wrld->eman->create_drop(test_vec, Item::Stone, 2, 3);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone_Coal) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
-
                 wrld->eman->create_drop(test_vec, Item::Coal, 1, 1);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Sand) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
-
                 wrld->eman->create_drop(test_vec, Item::Sand, 1, 2);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
-
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                energy += 5;
                 break;
             }
             else if (l == Decorations::Tallgrass) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                energy += 5;
                 break;
             }
             else if (l == Decorations::Flower) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                energy += 5;
                 break;
             }
             else if (l == Decorations::Bush) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-
-                wrld->eman->create_drop(test_vec, Item::Apple, 0, 1);
+                wrld->eman->create_drop(test_vec, Item::Berries, 1, 1);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+                energy += 5;
                 break;
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Dirt) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
+                energy += 5;
                 break;
             }
         }
@@ -235,4 +238,10 @@ auto Player::tick() -> void {
     if(energy > base_energy)
         energy = base_energy;
     Entity::tick();
+
+    if (xp > next_xp) {
+        level++;
+        xp -= next_xp;
+        next_xp = next_xp * 1.02f;
+    }
 }

@@ -32,4 +32,5 @@ class EntityManager final {
     u32 icount;
 
     u32 mobCap;
+    u32 totalCap;
 };

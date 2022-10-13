@@ -33,6 +33,9 @@ auto Entity::take_damage(Entity* e) -> void {
         iframes = 1;
         hp = (nhp < 0) ? 0 : nhp;
     }
+
+    if (hp == 0)
+        e->xp += xpval;
 }
 
 auto Entity::update(World* wrld, double dt) -> void {
