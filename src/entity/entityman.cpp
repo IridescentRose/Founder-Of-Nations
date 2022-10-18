@@ -6,6 +6,7 @@
 #include "spider.hpp"
 #include "arrow.hpp"
 #include "../world/tiles.hpp"
+#include "../sfxman.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
     player = p;
@@ -205,6 +206,7 @@ auto EntityManager::update(World* wrld, double dt) -> void {
         if(len < 0.5f) {
             player->inventory->add_item(e->itemData);
             ids.push_back(id);
+            SFXManager::get().play(SFX_TYPE_PICKUP);
         }
     }
 

@@ -1,6 +1,7 @@
 #include "player.hpp"
 #include "../world/tiles.hpp"
 #include <gtx/rotate_vector.hpp>
+#include "../sfxman.hpp"
 
 Player::Player() : texture(0), invSelect(0) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/charsheet.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
@@ -95,58 +96,68 @@ auto Player::update(World* wrld, double dt) -> void {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Log, 2, 3);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 wrld->eman->create_drop(test_vec, Item::Stone, 2, 3);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone_Coal) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 wrld->eman->create_drop(test_vec, Item::Coal, 1, 1);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Sand) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 wrld->eman->create_drop(test_vec, Item::Sand, 1, 2);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (l == Decorations::Tallgrass) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (l == Decorations::Flower) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (l == Decorations::Bush) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
                 wrld->eman->create_drop(test_vec, Item::Berries, 1, 1);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Shovel && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Dirt) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
                 energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
         }

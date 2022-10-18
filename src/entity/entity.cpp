@@ -1,6 +1,7 @@
 #include "entity.hpp"
 #include "../world/tiles.hpp"
 #include "../world/world.hpp"
+#include "../sfxman.hpp"
 
 auto test(glm::ivec2 pos, World* wrld) -> bool {
     auto t = wrld->get_tile(pos);
@@ -32,10 +33,14 @@ auto Entity::take_damage(Entity* e) -> void {
         nhp -= dmg;
         iframes = 1;
         hp = (nhp < 0) ? 0 : nhp;
-    }
 
-    if (hp == 0)
-        e->xp += xpval;
+        if (hp == 0) {
+            e->xp += xpval;
+            SFXManager::get().play(SFX_TYPE_KILL);
+        } else {
+            SFXManager::get().play(SFX_TYPE_HIT);
+        }
+    }
 }
 
 auto Entity::update(World* wrld, double dt) -> void {
