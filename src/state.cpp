@@ -26,6 +26,7 @@ auto GameState::on_start() -> void {
     psp_controller->add_command({ (int)Input::PSPButtons::Right, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::LTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltL, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::RTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltR, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Start, KeyFlag::Press }, { World::save_game, world.get() });
 
     key_controller->add_command({ (int)Input::Keys::W, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });
     key_controller->add_command({ (int)Input::Keys::S, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
@@ -36,6 +37,7 @@ auto GameState::on_start() -> void {
     key_controller->add_command({ (int)Input::Keys::I, KeyFlag::Press }, { Player::toggle_inv, player.get() });
     key_controller->add_command({ (int)Input::Keys::Z, KeyFlag::Press }, { Player::invScrollL, player.get() });
     key_controller->add_command({ (int)Input::Keys::C, KeyFlag::Press }, { Player::invScrollR, player.get() });
+    key_controller->add_command({ (int)Input::Keys::Enter, KeyFlag::Press }, { World::save_game, world.get() });
 
     mouse_controller->add_command({(int)Input::MouseButtons::Left, KeyFlag::Press}, {Player::hit, player.get()});
 

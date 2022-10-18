@@ -22,6 +22,11 @@ class World final {
     auto draw() -> void;
     auto tick() -> void;
 
+    auto load(FILE* fptr);
+    auto save(FILE* fptr);
+
+    static auto save_game(std::any a) -> void;
+
     auto get_tile(glm::ivec2 pos) -> uint8_t;
     auto get_tile2(glm::ivec2 pos) -> uint8_t;
     auto set_tile(glm::ivec2 pos, uint8_t type) -> void;

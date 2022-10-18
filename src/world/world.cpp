@@ -1,5 +1,97 @@
 #include "world.hpp"
 #include "noiseutil.hpp"
+#include <cstdio>
+
+auto World::load(FILE* fptr) {
+    if (fptr == NULL)
+        return;
+    
+    fread(&NoiseUtil::seed, sizeof(NoiseUtil::seed), 1, fptr);
+    NoiseUtil::initialize(NoiseUtil::seed);
+
+    //Player Pos
+    fread(&player->pos, sizeof(player->pos), 1, fptr);
+
+    //Player ATK
+    fread(&player->base_atk, sizeof(player->base_atk), 1, fptr);
+    fread(&player->atk, sizeof(player->atk), 1, fptr);
+
+    //Player DEF
+    fread(&player->base_def, sizeof(player->base_def), 1, fptr);
+    fread(&player->def, sizeof(player->def), 1, fptr);
+
+    //Player ENERGY
+    fread(&player->base_energy, sizeof(player->base_energy), 1, fptr);
+    fread(&player->energy, sizeof(player->energy), 1, fptr);
+
+    //MISC
+    fread(&player->regen, sizeof(player->regen), 1, fptr);
+    fread(&player->next_xp, sizeof(player->next_xp), 1, fptr);
+    fread(&player->xp, sizeof(player->xp), 1, fptr);
+    fread(&player->xpval, sizeof(player->xpval), 1, fptr);
+    fread(&player->level, sizeof(player->level), 1, fptr);
+
+    // World Time
+    fread(&ticks, sizeof(ticks), 1, fptr);
+
+    // Player Inventory
+    for (int i = 0; i < 24; i++) {
+        Slot slt;
+        fread(&slt, sizeof(slt), 1, fptr);
+        player->inventory->set_slot(i, slt);
+    }
+
+    fclose(fptr);
+}
+
+auto World::save(FILE* fptr) {
+    if (fptr == NULL)
+        return;
+
+    //World Seed
+    fwrite(&NoiseUtil::seed, sizeof(NoiseUtil::seed), 1, fptr);
+
+    //Player Pos
+    fwrite(&player->pos, sizeof(player->pos), 1, fptr);
+
+    //Player ATK
+    fwrite(&player->base_atk, sizeof(player->base_atk), 1, fptr);
+    fwrite(&player->atk, sizeof(player->atk), 1, fptr);
+
+    //Player DEF
+    fwrite(&player->base_def, sizeof(player->base_def), 1, fptr);
+    fwrite(&player->def, sizeof(player->def), 1, fptr);
+
+    //Player ENERGY
+    fwrite(&player->base_energy, sizeof(player->base_energy), 1, fptr);
+    fwrite(&player->energy, sizeof(player->energy), 1, fptr);
+
+    //MISC
+    fwrite(&player->regen, sizeof(player->regen), 1, fptr);
+    fwrite(&player->next_xp, sizeof(player->next_xp), 1, fptr);
+    fwrite(&player->xp, sizeof(player->xp), 1, fptr);
+    fwrite(&player->xpval, sizeof(player->xpval), 1, fptr);
+    fwrite(&player->level, sizeof(player->level), 1, fptr);
+    
+    // World Time
+    fwrite(&ticks, sizeof(ticks), 1, fptr);
+
+    // Player Inventory
+    for (int i = 0; i < 24; i++) {
+        Slot slt = player->inventory->get_slot(i);
+        fwrite(&slt, sizeof(slt), 1, fptr);
+    }
+
+    fclose(fptr);
+}
+
+
+auto World::save_game(std::any a) -> void {
+    World* wrld = std::any_cast<World*>(a);
+    SC_APP_INFO("SAVING GAME!");
+    if (wrld != nullptr) 
+        wrld->save(fopen("savedata.dat", "wb"));
+}
 
 World::World(RefPtr<Player> player) {
     this->player = player;
@@ -8,13 +100,21 @@ World::World(RefPtr<Player> player) {
 
     eman = create_scopeptr<EntityManager>(player);
 
-    NoiseUtil::initialize();
-
-    update_chunks();    
-
     lightLevel = 15;
     lastLevel = lightLevel;
     ticks = 0;
+
+    FILE* fptr = fopen("savedata.dat", "rb");
+    if (fptr == NULL) {
+        NoiseUtil::initialize();
+        update_chunks();
+
+        fptr = fopen("savedata.dat", "wb");
+        save(fptr);
+    }
+    else {
+        load(fptr);
+    }
 }
 
 World::~World() {
