@@ -27,7 +27,7 @@ Player::Player() : texture(0), invSelect(0), inInventory(false) {
     ui = create_scopeptr<UI>(*this);
 
     rot = 0.0f;
-    pos = glm::vec3(1024 + 8, 0, 1024 + 8);
+    pos = glm::vec3(1032, 0, 1032);
 
     hp = base_hp = 100;
     regen = 2;
@@ -45,6 +45,8 @@ Player::Player() : texture(0), invSelect(0), inInventory(false) {
     inventory->set_slot(3, {Item::Hoe, 1});
     inventory->set_slot(4, {Item::Axe, 1});
     inventory->set_slot(5, {Item::Shovel, 1});
+
+    triggerUse = false;
 }
 
 Player::~Player() {
@@ -102,6 +104,13 @@ auto Player::update(World* wrld, double dt) -> void {
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
+            if (tool.itemID == Item::Axe && t == Tile::Wood) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+                wrld->eman->create_drop(test_vec, Item::Log, 1, 0);
+                energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
+                break;
+            }
             else if (tool.itemID == Item::Pickaxe && t == Tile::Stone) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 wrld->eman->create_drop(test_vec, Item::Stone, 2, 3);
@@ -116,6 +125,13 @@ auto Player::update(World* wrld, double dt) -> void {
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
+            else if (tool.itemID == Item::Pickaxe && t == Tile::Cobblestone) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
+                wrld->eman->create_drop(test_vec, Item::Stone, 1, 0);
+                energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
+                break;
+            }
             else if (tool.itemID == Item::Shovel && t == Tile::Sand) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Dirt);
                 wrld->eman->create_drop(test_vec, Item::Sand, 1, 2);
@@ -125,21 +141,21 @@ auto Player::update(World* wrld, double dt) -> void {
             }
             else if (tool.itemID == Item::Hoe && t == Tile::Grass) {
                 wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
-                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                wrld->eman->create_drop(test_vec, Item::Seed, 1, 0);
                 energy += 5;
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (l == Decorations::Tallgrass) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                wrld->eman->create_drop(test_vec, Item::Seed, 1, 0);
                 energy += 5;
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
             else if (l == Decorations::Flower) {
                 wrld->set_tile2({ test_vec.x, test_vec.z }, Decorations::None);
-                wrld->eman->create_drop(test_vec, Item::Seed, 0, 1);
+                wrld->eman->create_drop(test_vec, Item::Seed, 1, 0);
                 energy += 5;
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
@@ -165,7 +181,73 @@ auto Player::update(World* wrld, double dt) -> void {
             }
         }
     }
+    if (triggerUse) {
+        triggerUse = false;
 
+        Slot& item = inventory->get_slot(invSelect);
+        if (item.itemID == Item::Berries) {
+            hp += 10;
+            item.count -= 1;
+        }
+        else if (item.itemID == Item::Bread) {
+            hp += 20;
+            item.count -= 1;
+        }
+        else if (item.itemID == Item::GoldenApple) {
+            hp += 100;
+            item.count -= 1;
+        }
+        else {
+            //Try place
+            glm::vec3 norm_vec(-1.0f, 0.0f, 0.0f);
+
+            if (facing) {
+                norm_vec = glm::rotateY(norm_vec, degtorad(rot + 180.0f));
+            }
+            else {
+                norm_vec = glm::rotateY(norm_vec, degtorad(rot));
+            }
+
+            for (int i = 0; i < 50; i++) {
+                auto test_vec = pos;
+                test_vec += norm_vec * (float)i / 25.0f;
+
+                if ((int)test_vec.x == (int)pos.x && (int)test_vec.z == (int)pos.z)
+                    continue;
+
+                auto t = (int)wrld->get_tile({ test_vec.x, test_vec.z });
+                auto l = (int)wrld->get_tile2({ test_vec.x, test_vec.z });
+
+                if (l != 0)
+                    continue;
+
+                if (item.itemID == Item::Seed && t == Tile::Farmland) {
+                    wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland1);
+                    item.count -= 1;
+                    break;
+                }
+                else if (item.itemID == Item::Log && (t == Tile::Sand || t == Tile::Water_Light || t == Tile::Dirt || t == Tile::Grass)) {
+                    wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Wood);
+                    item.count -= 1;
+                    break;
+                }
+                else if (item.itemID == Item::Stone && (t == Tile::Sand || t == Tile::Water_Light || t == Tile::Dirt || t == Tile::Grass)) {
+                    wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Cobblestone);
+                    item.count -= 1;
+                    break;
+                }
+                else if (item.itemID == Item::Sand && (t == Tile::Water_Heavy)) {
+                    wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Water_Light);
+                    item.count -= 1;
+                    break;
+                }
+            }
+
+        }
+
+        if (item.count == 0)
+            item.itemID = Item::None;
+    }
     character->update(dt);
 
     float len = sqrtf(acc.x * acc.x + acc.z * acc.z);

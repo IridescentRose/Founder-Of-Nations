@@ -130,3 +130,13 @@ auto Player::hit(std::any a) -> void {
         }
     }
 }
+
+auto Player::use(std::any a) -> void {
+    Player* p = std::any_cast<Player*>(a);
+
+    if (p != nullptr) {
+        if (!p->inInventory) {
+            p->triggerUse = true;
+        }
+    }
+}

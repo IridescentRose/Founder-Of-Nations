@@ -125,7 +125,10 @@ auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uin
         return;
 
     srand(time(NULL) + icount);
-    uint16_t r = rand() % random;
+    uint16_t r = 0;
+    if (random != 0) {
+        r = rand() % random;
+    }
     uint16_t cnt = count + r;
 
     if (cnt > 0) {

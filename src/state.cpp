@@ -39,7 +39,8 @@ auto GameState::on_start() -> void {
     key_controller->add_command({ (int)Input::Keys::C, KeyFlag::Press }, { Player::invScrollR, player.get() });
     key_controller->add_command({ (int)Input::Keys::Enter, KeyFlag::Press }, { World::save_game, world.get() });
 
-    mouse_controller->add_command({(int)Input::MouseButtons::Left, KeyFlag::Press}, {Player::hit, player.get()});
+    mouse_controller->add_command({ (int)Input::MouseButtons::Left, KeyFlag::Press }, { Player::hit, player.get() });
+    mouse_controller->add_command({ (int)Input::MouseButtons::Right, KeyFlag::Press }, { Player::use, player.get() });
 
     Input::add_controller(psp_controller);
     Input::add_controller(key_controller);

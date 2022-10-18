@@ -25,6 +25,8 @@ namespace Tile {
     const uint8_t Farmland2 = 20;
     const uint8_t Farmland3 = 21;
     const uint8_t Farmland4 = 22;
+    const uint8_t Cobblestone = 23;
+    const uint8_t Wood = 24;
 }
 
 namespace Biome {

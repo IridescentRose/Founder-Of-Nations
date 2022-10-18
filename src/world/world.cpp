@@ -1,6 +1,7 @@
 #include "world.hpp"
 #include "noiseutil.hpp"
 #include <cstdio>
+#include <filesystem>
 
 auto World::load(FILE* fptr) {
     if (fptr == NULL)
@@ -110,6 +111,7 @@ World::World(RefPtr<Player> player) {
         update_chunks();
 
         fptr = fopen("savedata.dat", "wb");
+        std::filesystem::create_directory("world");
         save(fptr);
     }
     else {

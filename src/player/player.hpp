@@ -42,12 +42,14 @@ public:
 	static auto toggle_inv(std::any a) -> void;
 
 	static auto hit(std::any a) -> void;
+	static auto use(std::any a) -> void;
 
 	float rot;
 	RefPtr<Inventory> inventory;
 	bool inInventory;
 private:
 	bool triggerHit;
+	bool triggerUse;
 	bool facing;
 	bool swing;
 	float swingTimer;

@@ -55,9 +55,13 @@ auto get_tile_data(uint8_t id, uint8_t biome) -> TileData {
     case Tile::Stone:
         return {20, 1};
     case Tile::Stone_Coal:
-        return {21, 1};
+        return { 21, 1 };
     case Tile::Cave_Entrance:
         return {22, 1};
+    case Tile::Cobblestone:
+        return { 23, 1 };
+    case Tile::Wood:
+        return { 24, 1 };
     case Tile::Grass_Mushroom:
         return {static_cast<u8>(biome * 16 + 32 + 7), 2};
 
