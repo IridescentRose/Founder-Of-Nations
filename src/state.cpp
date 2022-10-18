@@ -19,6 +19,7 @@ auto GameState::on_start() -> void {
 
     //TODO: PSP -> ANALOG MOVE
     //TODO: PSP -> INV SCROLL LEFT / RIGHT
+    //TODO: PSP -> INVENTORY TOGGLE
     psp_controller->add_command({ (int)Input::PSPButtons::Up, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::Down, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::Left, KeyFlag::Press | KeyFlag::Held }, { Player::move_left, player.get() });
@@ -32,6 +33,7 @@ auto GameState::on_start() -> void {
     key_controller->add_command({ (int)Input::Keys::D, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
     key_controller->add_command({ (int)Input::Keys::Q, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltL, player.get() });
     key_controller->add_command({ (int)Input::Keys::E, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltR, player.get() });
+    key_controller->add_command({ (int)Input::Keys::I, KeyFlag::Press }, { Player::toggle_inv, player.get() });
     key_controller->add_command({ (int)Input::Keys::Z, KeyFlag::Press }, { Player::invScrollL, player.get() });
     key_controller->add_command({ (int)Input::Keys::C, KeyFlag::Press }, { Player::invScrollR, player.get() });
 

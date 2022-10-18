@@ -36,7 +36,7 @@ UI::UI(Entity& e) : entity(e), slot_sel(0) {
 	}
 }
 
-void UI::draw(RefPtr<Inventory> inv) {
+void UI::draw(RefPtr<Inventory> inv, bool inInv) {
 	glDisable(GL_DEPTH_TEST);
 
 	for (int i = 0; i < 3; i++) {
@@ -87,6 +87,32 @@ void UI::draw(RefPtr<Inventory> inv) {
 				font_renderer->add_text(str, glm::vec2(168 + 24 * i + 23 - size, 1), Rendering::Color{255, 255, 255, 255}, -4);
 			}
 		} 
+	}
+
+	if (inInv) {
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 6; x++) {
+				item_slot->set_position({ 168 + 24 * x, 40 + y * 32 });
+				item_slot->set_layer(-2);
+				item_slot->draw();
+
+				auto idx = 6 + x + y * 6;
+				auto slot = inv->get_slot(idx);
+				if (slot.count > 0 && slot.itemID != Item::None) {
+					auto id = slot.itemID - 1;
+
+					items[id]->set_position({ 168 + 24 * x + 4, 40 + y * 32 + 4});
+					items[id]->set_layer(-3);
+					items[id]->draw();
+
+					if (slot.count > 1) {
+						auto str = std::to_string((int)slot.count);
+						auto size = font_renderer->calculate_size(str);
+						font_renderer->add_text(str, glm::vec2(168 + 24 * x + 23 - size, 1 + 40 + y * 32), Rendering::Color{ 255, 255, 255, 255 }, -4);
+					}
+				}
+			}
+		}
 	}
 
 	item_slot_sel->set_position({ 168 + 24 * slot_sel, 0 });

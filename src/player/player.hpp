@@ -39,10 +39,13 @@ public:
 	static auto invScrollL(std::any a) -> void;
 	static auto invScrollR(std::any a) -> void;
 
+	static auto toggle_inv(std::any a) -> void;
+
 	static auto hit(std::any a) -> void;
 
 	float rot;
 	RefPtr<Inventory> inventory;
+	bool inInventory;
 private:
 	bool triggerHit;
 	bool facing;

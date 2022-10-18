@@ -38,6 +38,7 @@ class Inventory final {
 
     auto add_item(Slot slot) -> void;
 
+    int slotSel;
     private:
     auto find_slot_existing(uint8_t itemData) -> uint8_t;
     std::array<Slot, 24> slotData;

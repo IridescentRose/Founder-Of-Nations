@@ -9,7 +9,9 @@ using namespace Stardust_Celeste;
 enum SFXType{
     SFX_TYPE_HIT,
     SFX_TYPE_KILL,
-    SFX_TYPE_PICKUP
+    SFX_TYPE_PICKUP,
+    SFX_TYPE_SWING,
+    SFX_TYPE_SHOOT
 };
 
 class SFXManager final : public Singleton {

@@ -3,7 +3,7 @@
 #include <gtx/rotate_vector.hpp>
 #include "../sfxman.hpp"
 
-Player::Player() : texture(0), invSelect(0) {
+Player::Player() : texture(0), invSelect(0), inInventory(false) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/charsheet.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 
     camera = create_scopeptr<Rendering::Camera>(
@@ -57,8 +57,10 @@ auto Player::update(World* wrld, double dt) -> void {
         //HIT
         {
             auto tool = inventory->get_slot(invSelect);
-            if (tool.itemID != Item::Bow)
+            if (tool.itemID != Item::Bow) {
                 wrld->eman->player_hit();
+                SFXManager::get().play(SFX_TYPE_SWING);
+            } 
             else {
                 glm::vec3 norm_vec(-1.0f, 0.0f, 0.0f);
                 if (facing) {
@@ -69,6 +71,7 @@ auto Player::update(World* wrld, double dt) -> void {
                 }
                 norm_vec *= 8;
                 wrld->eman->player_arrow(facing, pos, norm_vec + vel, atk * 2);
+                SFXManager::get().play(SFX_TYPE_SHOOT);
             }
         }
 
@@ -247,7 +250,7 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
     Rendering::RenderContext::get().set_mode_2D();
     Rendering::RenderContext::get().matrix_clear();
-    ui->draw(inventory);
+    ui->draw(inventory, inInventory);
 }
 
 

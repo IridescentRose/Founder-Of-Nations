@@ -8,6 +8,16 @@ SFXManager::SFXManager() {
     }
     {
         std::vector<RefPtr<Audio::Clip>> v;
+        v.push_back(create_refptr<Audio::Clip>("assets/sfx/bowshoot.wav"));
+        soundmap.emplace(SFX_TYPE_SHOOT, v);
+    }
+    {
+        std::vector<RefPtr<Audio::Clip>> v;
+        v.push_back(create_refptr<Audio::Clip>("assets/sfx/swing.wav"));
+        soundmap.emplace(SFX_TYPE_SWING, v);
+    }
+    {
+        std::vector<RefPtr<Audio::Clip>> v;
         v.push_back(create_refptr<Audio::Clip>("assets/sfx/hit1.wav"));
         v.push_back(create_refptr<Audio::Clip>("assets/sfx/hit2.wav"));
         v.push_back(create_refptr<Audio::Clip>("assets/sfx/hit3.wav"));

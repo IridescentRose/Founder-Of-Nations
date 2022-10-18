@@ -13,7 +13,7 @@ class UI final {
     public:
     UI(Entity& e);
 
-    auto draw(RefPtr<Inventory> inv) -> void;
+    auto draw(RefPtr<Inventory> inv, bool inInv) -> void;
 
     u32 slot_sel;
 

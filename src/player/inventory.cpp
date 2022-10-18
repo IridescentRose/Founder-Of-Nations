@@ -1,10 +1,12 @@
 #include "inventory.hpp"
+#include <Utilities/Logger.hpp>
 
 Inventory::Inventory() {
     for(int i = 0; i < 24; i++){
         slotData[i].count = 0;
-        slotData[i].count = Item::None;
+        slotData[i].itemID = Item::None;
     }
+    slotSel = -1;
 }
 
 auto Inventory::get_slot(uint8_t idx) -> Slot& {
@@ -33,11 +35,13 @@ auto Inventory::add_item(Slot slot) -> void {
         for (int i = 0; i < 24; i++) {
             if (slotData[i].itemID == Item::None) {
                 idx = i;
+                slotData[idx].itemID = slot.itemID;
                 break;
             }
         }
     }
 
-    if(idx < 24)
+    if (idx < 24) {
         slotData[idx].count += slot.count;
+    }
 }
