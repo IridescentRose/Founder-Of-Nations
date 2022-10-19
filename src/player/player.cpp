@@ -284,7 +284,8 @@ auto Player::update(World* wrld, double dt) -> void {
                 character->set_animation_range(0, 3);
             }
         }
-    } else {
+    } 
+    else {
         swingTimer -= dt;
         if (item.itemID == Item::Sword) {
             character->set_animation_range(43, 47);
@@ -310,7 +311,9 @@ auto Player::update(World* wrld, double dt) -> void {
     camera->rot.y = degtorad(-rot);
     Rendering::RenderContext::get().set_mode_3D();
     camera->update();
-    
+
+    time = wrld->get_tick_time();
+
 }
 
 auto Player::draw() -> void {
@@ -332,7 +335,7 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
     Rendering::RenderContext::get().set_mode_2D();
     Rendering::RenderContext::get().matrix_clear();
-    ui->draw(inventory, inInventory);
+    ui->draw(inventory, inInventory, time);
 }
 
 

@@ -36,6 +36,10 @@ class World final {
         return lightLevel;
     }
 
+    inline auto get_tick_time() -> uint32_t {
+        return ticks;
+    }
+
     ScopePtr<EntityManager> eman;
 
     private:    

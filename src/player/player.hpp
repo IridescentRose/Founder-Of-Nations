@@ -48,6 +48,7 @@ public:
 	RefPtr<Inventory> inventory;
 	bool inInventory;
 private:
+	uint32_t time;
 	bool triggerHit;
 	bool triggerUse;
 	bool facing;

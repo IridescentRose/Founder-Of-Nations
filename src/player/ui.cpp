@@ -36,7 +36,7 @@ UI::UI(Entity& e) : entity(e), slot_sel(0) {
 	}
 }
 
-void UI::draw(RefPtr<Inventory> inv, bool inInv) {
+void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
 	glDisable(GL_DEPTH_TEST);
 
 	for (int i = 0; i < 3; i++) {
@@ -122,7 +122,15 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv) {
 	auto str = "POS: " + std::to_string((int)entity.pos.x) + " " + std::to_string((int)entity.pos.z);
 	auto size = font_renderer->calculate_size(str);
 
-	font_renderer->add_text(str, glm::vec2(480 - size, 262), Rendering::Color{ 255, 255, 255, 255 }, -4);
+	font_renderer->add_text(str, glm::vec2(480 - size, 252), Rendering::Color{ 0, 0, 0, 255 }, -4);
+
+	auto d = tick / 2400;
+	auto h = (tick % 2400) / 100;
+
+	auto str2 = "Time: Day " + std::to_string(d) + " Hour " + std::to_string(h);
+	auto size2 = font_renderer->calculate_size(str2);
+
+	font_renderer->add_text(str2, glm::vec2(480 - size2, 262), Rendering::Color{ 0, 0, 0, 255 }, -4);
 
 	font_renderer->rebuild();
 	font_renderer->draw();
