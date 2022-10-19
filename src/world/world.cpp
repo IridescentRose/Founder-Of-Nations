@@ -84,6 +84,10 @@ auto World::save(FILE* fptr) {
     }
 
     fclose(fptr);
+
+    for (auto& [id, chk] : mapData) {
+        chk->save();
+    }
 }
 
 
@@ -214,6 +218,7 @@ auto World::update_chunks() -> void {
     }
 
     for (auto& [key, val] : mapData) {
+        val->save();
         delete val;
     }
 
@@ -224,7 +229,9 @@ auto World::update_chunks() -> void {
         u32 id = (u16)(v.x) << 16 | (((u16)v.y) & 0x0FF);
 
         auto chunk = new Chunk(v.x, v.y, terrain_texture, tree_texture, lightLevel);
-        chunk->generate_tile_data();
+        if (!chunk->load()) {
+            chunk->generate_tile_data();
+        }
         chunk->generate_mesh_data();
         mapData.emplace(id, chunk);
     }

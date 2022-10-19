@@ -33,6 +33,40 @@ struct TileData {
     u8 frame_count;
 };
 
+
+auto Chunk::save() -> void {
+    u32 id = (cX << 16) | (cY & 0x0FF);
+    auto filename = "world/" + std::to_string(id) + ".chk";
+    FILE* fptr = fopen(filename.c_str(), "wb");
+
+    if (fptr == NULL)
+        return;
+
+    fwrite(tiles, sizeof(uint8_t), 256, fptr);
+    fwrite(layer2, sizeof(uint8_t), 256, fptr);
+    fwrite(biome, sizeof(uint8_t), 256, fptr);
+    
+    fclose(fptr);
+}
+
+auto Chunk::load() -> bool {
+    u32 id = (cX << 16) | (cY & 0x0FF);
+    auto filename = "world/" + std::to_string(id) + ".chk";
+    FILE* fptr = fopen(filename.c_str(), "rb");
+
+    if (fptr == NULL)
+        return false;
+
+
+    fread(tiles, sizeof(uint8_t), 256, fptr);
+    fread(layer2, sizeof(uint8_t), 256, fptr);
+    fread(biome, sizeof(uint8_t), 256, fptr);
+
+    fclose(fptr);
+
+    return true;
+}
+
 // DATA MAP
 auto get_tile_data(uint8_t id, uint8_t biome) -> TileData {
     switch (id) {

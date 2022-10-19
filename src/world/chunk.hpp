@@ -21,6 +21,9 @@ class Chunk final {
     auto generate_tile_data() -> void;
     auto generate_mesh_data() -> void;
 
+    auto save() -> void;
+    auto load() -> bool;
+
     uint8_t tiles[256];
     uint8_t layer2[256];
     uint8_t biome[256];
