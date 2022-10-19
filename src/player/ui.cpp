@@ -119,7 +119,7 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
 	item_slot_sel->set_layer(-4);
 	item_slot_sel->draw();
 
-	auto str = "POS: " + std::to_string((int)entity.pos.x) + " " + std::to_string((int)entity.pos.z);
+	auto str = "Position: " + std::to_string((int)entity.pos.x) + " " + std::to_string((int)entity.pos.z);
 	auto size = font_renderer->calculate_size(str);
 
 	font_renderer->add_text(str, glm::vec2(480 - size, 252), Rendering::Color{ 0, 0, 0, 255 }, -4);
