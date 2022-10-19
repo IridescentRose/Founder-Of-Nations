@@ -133,13 +133,25 @@ auto EntityManager::create_human(glm::vec3 pos, uint8_t type) -> void {
         hcount,
         create_refptr<Human>(humanTex, type)
     );
-
-    humans[hcount]->atk = 10;
-    humans[hcount]->def = 5;
-    humans[hcount]->pos = pos;
-    humans[hcount]->base_hp = 25;
-    humans[hcount]->hp = humans[hcount]->base_hp;
-    humans[hcount]->xpval = 5;
+    if (type == HUMAN_TYPE_GUARD) {
+        humans[hcount]->atk = 20;
+        humans[hcount]->base_atk = 20;
+        humans[hcount]->def = 15;
+        humans[hcount]->base_def = 15;
+        humans[hcount]->pos = pos;
+        humans[hcount]->base_hp = 100;
+        humans[hcount]->hp = humans[hcount]->base_hp;
+        humans[hcount]->xpval = 50;
+        humans[hcount]->regen = 2;
+    }
+    else {
+        humans[hcount]->atk = 10;
+        humans[hcount]->def = 5;
+        humans[hcount]->pos = pos;
+        humans[hcount]->base_hp = 25;
+        humans[hcount]->hp = humans[hcount]->base_hp;
+        humans[hcount]->xpval = 5;
+    }
 
     hcount++;
 }
@@ -235,6 +247,15 @@ auto EntityManager::update(World* wrld, double dt) -> void {
                 player->take_damage(e.get());
             }
         }
+
+        for (auto& [id2, h] : humans) {
+            auto diff = e->pos - h->pos;
+            auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+            if (len < 1.0f) {
+                h->take_damage(e.get());
+            }
+        }
     }
 
     for(auto& id : ids) {
@@ -310,7 +331,18 @@ auto EntityManager::update(World* wrld, double dt) -> void {
     ids.clear();
     
     for (auto& [id, h] : humans) {
-        h->update_human(wrld, dt, player->pos);
+        h->update_human(wrld, dt, player->pos, entities);
+
+        if (h->hType >= HUMAN_TYPE_GUARD) {
+            for (auto& [id2, e] : entities) {
+                auto diff = h->pos - e->pos;
+                auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+                if (len < 0.5f) {
+                    e->take_damage(h.get());
+                }
+            }
+        }
 
         if (h->hp <= 0)
             ids.push_back(id);

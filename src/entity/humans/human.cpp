@@ -1,5 +1,5 @@
 #include "human.hpp"
-
+#include "../enemy.hpp"
 
 Human::Human(u32 texture, u8 type) : hType(type), facing(false) {
     sprt = create_refptr<Graphics::G2D::AnimatedSprite>(
@@ -17,17 +17,59 @@ Human::~Human() {
     sprt.reset();
 }
 
-auto Human::update_human(World* wrld, double dt, glm::vec3 player_pos) -> void {
+auto Human::update_human(World* wrld, double dt, glm::vec3 player_pos, const std::map<u32, RefPtr<Enemy>>& enemies) -> void {
+    
+    // Bandits run from player
+    {
+        glm::vec3 diff = player_pos - pos;
+        float len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+        if (len > 1.0f)
+            diff /= len;
 
-    glm::vec3 diff = player_pos - pos;
-    float len = sqrtf(diff.x * diff.x + diff.z * diff.z);
-    if (len > 1.0f)
-        diff /= len;
+        if (hType == HUMAN_TYPE_BANDIT && len < 6.0f) {
+            acc = -diff * 25.0f;
+        }
+    }
 
-    if (hType == HUMAN_TYPE_BANDIT && len < 6.0f) {
-        acc = -diff * 25.0f;
+    bool running = false;
+
+    std::map<float, RefPtr<Enemy>> closest;
+    float min = 30000.0f;
+    for (auto& [id, e] : enemies) {
+        glm::vec3 diff = pos - e->pos;
+        float len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+        if (len < min)
+            min = len;
+        closest.emplace(len, e);
+    }
+
+    if (min < 6.0f) {
+        auto e = closest[min];
+
+        auto diff = pos - e->pos;
+        if (min > 1.0f)
+            diff /= min;
+
+        if (hType < HUMAN_TYPE_GUARD) {
+            auto potacc = diff * 25.0f;
+            acc = glm::vec3(potacc.x, 0, potacc.z);
+
+            running = true;
+        }
+        else {
+            hType = 4;
+            auto potacc = -diff * 25.0f;
+            acc = glm::vec3(potacc.x, 0, potacc.z);
+            running = true;
+        }
     }
     else {
+        if (hType > HUMAN_TYPE_GUARD)
+            hType = HUMAN_TYPE_GUARD;
+    }
+
+    if(!running) {
 
         moveTimer += dt;
 
