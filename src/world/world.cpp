@@ -298,4 +298,8 @@ auto World::tick() -> void {
 
     player->tick();
     eman->tick(this);
+
+    for (auto& [id, chk] : mapData) {
+        chk->tick(this);
+    }
 }

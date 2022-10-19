@@ -179,6 +179,21 @@ auto Player::update(World* wrld, double dt) -> void {
                 SFXManager::get().play(SFX_TYPE_HIT);
                 break;
             }
+            else if (tool.itemID == Item::Hoe && (t == Tile::Farmland1 || t == Tile::Farmland2 || t == Tile::Farmland3)) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
+                wrld->eman->create_drop(test_vec, Item::Seed, 1, 0);
+                energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
+                break;
+            }
+            else if (tool.itemID == Item::Hoe && t == Tile::Farmland4) {
+                wrld->set_tile({ test_vec.x, test_vec.z }, Tile::Farmland);
+                wrld->eman->create_drop(test_vec, Item::Seed, 1, 0);
+                wrld->eman->create_drop(test_vec, Item::Wheat, 1, 3);
+                energy += 5;
+                SFXManager::get().play(SFX_TYPE_HIT);
+                break;
+            }
         }
     }
     if (triggerUse) {

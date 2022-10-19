@@ -10,6 +10,8 @@ const uint32_t CHUNK_SIZE_X = 16;
 const uint32_t CHUNK_SIZE_Y = 16;
 const uint32_t TILE_SIZE = 32;
 
+class World;
+
 class Chunk final {
   public:
     Chunk(int cx, int cy, u32 terrain, u32 tree, u32 light);
@@ -23,6 +25,8 @@ class Chunk final {
 
     auto save() -> void;
     auto load() -> bool;
+
+    auto tick(World* wrld) -> void;
 
     uint8_t tiles[256];
     uint8_t layer2[256];

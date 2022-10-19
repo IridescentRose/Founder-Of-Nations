@@ -1,5 +1,6 @@
 #include "chunk.hpp"
 #include "generator.hpp"
+#include "world.hpp"
 
 Chunk::Chunk(int cx, int cy, u32 terrain, u32 tree, u32 level) : cX(cx), cY(cy) {
     tmap = create_scopeptr<G2D::AnimatedTilemap>(
@@ -33,6 +34,64 @@ struct TileData {
     u8 frame_count;
 };
 
+
+auto Chunk::tick(World* wrld) -> void {
+    // Random ticks
+    for (int i = 0; i < 4; i++) {
+        auto rx = rand() % 16;
+        auto ry = rand() % 16;
+
+        auto p = glm::vec2(rx + cX * 16, ry + cY * 16);
+        auto t = wrld->get_tile(p);
+
+        if (t == Tile::Dirt) {
+            wrld->set_tile(p, Tile::Grass);
+        }
+        else if (t == Tile::Farmland) {
+            wrld->set_tile(p, Tile::Dirt);
+        }
+        else if (t == Tile::Farmland1) {
+            wrld->set_tile(p, Tile::Farmland2);
+        }
+        else if (t == Tile::Farmland2) {
+            wrld->set_tile(p, Tile::Farmland3);
+        }
+        else if (t == Tile::Farmland3) {
+            wrld->set_tile(p, Tile::Farmland4);
+        }
+    }
+
+    // Controlled ticks
+    for (int y = 0; y < 16; y++) {
+        for (int x = 0; x < 16; x++) {
+            auto pos = glm::vec2(x + cX * 16, y + cY * 16);
+            auto tile = wrld->get_tile(pos);
+
+            if (tile == Tile::Dirt) {
+                //Check for water around it
+                glm::vec2 checks[4];
+                for (int i = 0; i < 4; i++)
+                    checks[i] = pos;
+                
+                checks[0].x += 1;
+                checks[1].x -= 1;
+                checks[2].y += 1;
+                checks[3].y -= 1;
+
+                for (int i = 0; i < 4; i++) {
+                    auto t2 = wrld->get_tile(checks[i]);
+                    // Found water, fill this tile, and leave
+                    if (t2 == Tile::Water_Heavy || t2 == Tile::Water_Light) {
+                        wrld->set_tile(pos, Tile::Water_Light);
+                        break;
+                    }
+                }
+
+                
+            }
+        }
+    }
+}
 
 auto Chunk::save() -> void {
     u32 id = (cX << 16) | (cY & 0x0FF);
