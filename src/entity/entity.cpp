@@ -32,7 +32,11 @@ auto Entity::take_damage(Entity* e) -> void {
     if(dmg > 0) {
         nhp -= dmg;
         iframes = 1;
-        hp = (nhp < 0) ? 0 : nhp;
+
+        if (nhp < 0)
+            hp = 0;
+        else
+            hp = nhp;
 
         if (hp == 0) {
             e->xp += xpval;

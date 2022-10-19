@@ -46,6 +46,8 @@ Player::Player() : texture(0), invSelect(0), inInventory(false) {
     inventory->set_slot(4, {Item::Axe, 1});
     inventory->set_slot(5, {Item::Shovel, 1});
 
+    swing = false;
+
     triggerUse = false;
 }
 
@@ -276,9 +278,13 @@ auto Player::update(World* wrld, double dt) -> void {
 
     Slot item = inventory->get_slot(invSelect);
     if(item.count > 0){
-        if(item.itemID == Item::Sword) {
+        if (item.itemID == Item::Sword) {
             atk = base_atk * 1.75;
-        } else if (item.itemID == Item::Axe) {
+        }
+        else if (item.itemID == Item::Bow) {
+            atk = base_atk * 1.75;
+        }
+        else if (item.itemID == Item::Axe) {
             atk = base_atk * 1.5;
         } else {
             atk = base_atk;

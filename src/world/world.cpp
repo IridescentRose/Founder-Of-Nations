@@ -2,6 +2,7 @@
 #include "noiseutil.hpp"
 #include <cstdio>
 #include <filesystem>
+#include "../entity/humans/human.hpp"
 
 auto World::load(FILE* fptr) {
     if (fptr == NULL)
@@ -121,6 +122,11 @@ World::World(RefPtr<Player> player) {
     else {
         load(fptr);
     }
+
+    eman->create_human(player->pos, HUMAN_TYPE_CIVILIAN);
+    eman->create_human(player->pos + glm::vec3(1, 0, 1), HUMAN_TYPE_TRADER);
+    eman->create_human(player->pos + glm::vec3(0, 0, 1), HUMAN_TYPE_BANDIT);
+    eman->create_human(player->pos + glm::vec3(1, 0, 0), HUMAN_TYPE_GUARD);
 }
 
 World::~World() {

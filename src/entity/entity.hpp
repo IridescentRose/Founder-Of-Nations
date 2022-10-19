@@ -11,7 +11,7 @@ public:
 
 	glm::vec3 pos, vel, acc;
 
-	auto update(World* wrld, double dt) -> void;
+	virtual auto update(World* wrld, double dt) -> void;
 	
 	virtual auto tick() -> void;
 	auto take_damage(Entity* e) -> void;

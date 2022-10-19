@@ -7,17 +7,21 @@
 #include "arrow.hpp"
 #include "../world/tiles.hpp"
 #include "../sfxman.hpp"
+#include "humans/human.hpp"
 
 EntityManager::EntityManager(RefPtr<Player> p) {
     player = p;
     entities.clear();
     drops.clear();
+    arrows.clear();
+    humans.clear();
 
     beholderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/beholder.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     spiderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/spider.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     arrowTex = Rendering::TextureManager::get().load_texture("./assets/arrow.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
     itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
+	humanTex = Rendering::TextureManager::get().load_texture("./assets/humans.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 
     arrowSprite = create_refptr<Graphics::G2D::Sprite>(arrowTex, Rendering::Rectangle{ {0,0}, {32, 32}});
 
@@ -36,6 +40,7 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     acount = 0;
     ecount = 0;
     icount = 0;
+    hcount = 0;
     mobCap = totalCap = 5;
 }
 EntityManager::~EntityManager() {
@@ -120,6 +125,25 @@ auto EntityManager::create_random_spider(glm::vec3 pos) -> void {
     }
 }
 
+auto EntityManager::create_human(glm::vec3 pos, uint8_t type) -> void {
+    srand(time(NULL) + ecount);
+    u8 r = rand() % 4;
+
+    humans.emplace(
+        hcount,
+        create_refptr<Human>(humanTex, type)
+    );
+
+    humans[hcount]->atk = 10;
+    humans[hcount]->def = 5;
+    humans[hcount]->pos = pos;
+    humans[hcount]->base_hp = 25;
+    humans[hcount]->hp = humans[hcount]->base_hp;
+    humans[hcount]->xpval = 5;
+
+    hcount++;
+}
+
 auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uint16_t random) -> void {
     if (item == 0)
         return;
@@ -146,26 +170,49 @@ auto EntityManager::create_drop(glm::vec3 pos, uint8_t item, uint16_t count, uin
 auto EntityManager::player_hit() -> void{
     std::vector<u32> ids;
 
-    for(auto& [id, e] : entities) {
+    for (auto& [id, e] : entities) {
         auto diff = e->pos - player->pos;
         auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
 
-        if(len < 1.75){
+        if (len < 1.75) {
             e->take_damage(player.get());
             e->vel = diff * 5.0f;
 
-            if(e->hp <= 0){
+            if (e->hp <= 0) {
                 ids.push_back(id);
             }
         }
     }
 
-    for(auto& id : ids) {
+    for (auto& id : ids) {
         entities.erase(id);
         mobCap++;
         if (mobCap > totalCap) {
             mobCap = totalCap;
         }
+    }
+
+    ids.clear();
+
+    for (auto& [id, h] : humans) {
+        if (h->hType != HUMAN_TYPE_BANDIT)
+            continue;
+
+        auto diff = h->pos - player->pos;
+        auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+        if (len < 1.75) {
+            h->take_damage(player.get());
+            h->vel = diff * 5.0f;
+
+            if (h->hp <= 0) {
+                ids.push_back(id);
+            }
+        }
+    }
+
+    for (auto& id : ids) {
+        humans.erase(id);
     }
 }
 
@@ -236,10 +283,41 @@ auto EntityManager::update(World* wrld, double dt) -> void {
                 break;
             }
         }
+        for (auto& [id2, h] : humans) {
+            if (h->hType != HUMAN_TYPE_BANDIT)
+                continue;
+
+            auto diff = a->pos - h->pos;
+            auto len = sqrtf(diff.x * diff.x + diff.z * diff.z);
+
+            if (len < 0.5f) {
+                h->take_damage(a.get());
+                ids.push_back(id);
+                break;
+            }
+
+            if (a->timer > 4.0f) {
+                ids.push_back(id);
+                break;
+            }
+        }
     }
 
     for (auto& id : ids) {
         arrows.erase(id);
+    }
+
+    ids.clear();
+    
+    for (auto& [id, h] : humans) {
+        h->update_human(wrld, dt, player->pos);
+
+        if (h->hp <= 0)
+            ids.push_back(id);
+    }
+
+    for (auto& id : ids) {
+        humans.erase(id);
     }
 }
 
@@ -253,6 +331,10 @@ auto EntityManager::draw() -> void {
     }
 
     for (auto& [id, e] : arrows) {
+        e->draw(player->rot);
+    }
+
+    for (auto& [id, e] : humans) {
         e->draw(player->rot);
     }
 }
@@ -304,7 +386,10 @@ auto EntityManager::tick(World* wrld) -> void {
         }
 
     }
-    for(auto& [id, e] : entities) {
+    for (auto& [id, e] : entities) {
         e->tick();
+    }
+    for (auto& [id, h] : humans) {
+        h->tick();
     }
 }
