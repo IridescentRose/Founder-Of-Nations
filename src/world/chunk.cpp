@@ -254,12 +254,16 @@ auto Chunk::draw(float rot) -> void {
     );
 #ifndef PSP
     glFrontFace(GL_CW);
+#else
+    sceGuFrontFace(GU_CW);
 #endif
     Rendering::RenderContext::get().matrix_rotate({90, 0, 0});
     tmap->draw();
 
 #ifndef PSP
     glFrontFace(GL_CCW);
+#else
+    sceGuFrontFace(GU_CCW);
 #endif
     
     for(uint32_t y = 0; y < CHUNK_SIZE_X; y++){

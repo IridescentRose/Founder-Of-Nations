@@ -114,7 +114,13 @@ auto Human::draw(float rot) -> void {
     Rendering::RenderContext::get().matrix_clear();
     Rendering::RenderContext::get().matrix_translate({ (pos.x) * HUMAN_SIZE, pos.y * HUMAN_SIZE, pos.z * HUMAN_SIZE });
 
+
+#ifndef PSP
     glDisable(GL_CULL_FACE);
+#else 
+    sceGuDisable(GU_CULL_FACE);
+#endif
+
     auto degrees = (int)rot % 360;
 
     auto facingTemp = facing;
@@ -129,5 +135,10 @@ auto Human::draw(float rot) -> void {
     Rendering::RenderContext::get().matrix_translate({ -50*0.75f, 0, 0 });
     sprt->draw();
 
+
+#ifndef PSP
     glEnable(GL_CULL_FACE);
+#else 
+    sceGuEnable(GU_CULL_FACE);
+#endif
 }

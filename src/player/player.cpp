@@ -341,7 +341,12 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_clear();
     Rendering::RenderContext::get().matrix_translate({ (pos.x) * PLAYER_SIZE, pos.y * PLAYER_SIZE, pos.z * PLAYER_SIZE });
 
+
+#ifndef PSP
     glDisable(GL_CULL_FACE);
+#else 
+    sceGuDisable(GU_CULL_FACE);
+#endif
 
     if(facing)
         Rendering::RenderContext::get().matrix_rotate({ 0, rot, 0 });
@@ -351,7 +356,12 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_translate({ -50*0.75f, 0, 0 });
     character->draw();
 
+    
+#ifndef PSP
     glEnable(GL_CULL_FACE);
+#else 
+    sceGuEnable(GU_CULL_FACE);
+#endif
 
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
     Rendering::RenderContext::get().set_mode_2D();

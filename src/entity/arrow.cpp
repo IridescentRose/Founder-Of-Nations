@@ -11,7 +11,13 @@ auto ArrowEntity::update_arrow(World* wrld, double dt) -> void {
 auto ArrowEntity::draw(float rot) -> void {
     if (timer < 0.75f)
         return;
+        
+#ifndef PSP
     glDisable(GL_CULL_FACE);
+#else 
+    sceGuDisable(GU_CULL_FACE);
+#endif
+
     Rendering::RenderContext::get().matrix_clear();
     Rendering::RenderContext::get().matrix_translate({ (pos.x) * 32.0f, pos.y * 32.0f, pos.z * 32.0f });
     if(!facing)
@@ -21,5 +27,11 @@ auto ArrowEntity::draw(float rot) -> void {
     Rendering::RenderContext::get().matrix_translate({ (-0.5f) * 32.0f, 0, 0 });
 
     sprite->draw();
+
+#ifndef PSP
     glEnable(GL_CULL_FACE);
+#else 
+    sceGuEnable(GU_CULL_FACE);
+#endif
+
 }

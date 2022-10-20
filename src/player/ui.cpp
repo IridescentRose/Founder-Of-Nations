@@ -37,7 +37,12 @@ UI::UI(Entity& e) : entity(e), slot_sel(0) {
 }
 
 void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
-	glDisable(GL_DEPTH_TEST);
+
+#ifndef PSP
+    glDisable(GL_DEPTH_TEST);
+#else 
+    sceGuDisable(GU_DEPTH_TEST);
+#endif
 
 	for (int i = 0; i < 3; i++) {
 		background_bar->set_position({ 0, 252 - i * 20});
@@ -135,5 +140,10 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
 	font_renderer->rebuild();
 	font_renderer->draw();
 
-	glEnable(GL_DEPTH_TEST);
+
+#ifndef PSP
+    glEnable(GL_DEPTH_TEST);
+#else 
+    sceGuEnable(GU_DEPTH_TEST);
+#endif
 }
