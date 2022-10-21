@@ -382,6 +382,9 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_translate({ -50*0.75f, 0, 0 });
     character->draw();
 
+    Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
+    Rendering::RenderContext::get().set_mode_2D();
+    Rendering::RenderContext::get().matrix_clear();
     
 #ifndef PSP
     glEnable(GL_CULL_FACE);
@@ -389,9 +392,6 @@ auto Player::draw() -> void {
     sceGuEnable(GU_CULL_FACE);
 #endif
 
-    Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
-    Rendering::RenderContext::get().set_mode_2D();
-    Rendering::RenderContext::get().matrix_clear();
     ui->draw(inventory, inInventory, time, dead);
 }
 

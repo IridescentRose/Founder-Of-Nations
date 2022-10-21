@@ -2,10 +2,10 @@
 
 
 UI::UI(Entity& e) : entity(e), slot_sel(0) {
-	texID = Rendering::TextureManager::get().load_texture("./assets/gui.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-	fontID = Rendering::TextureManager::get().load_texture("./assets/default.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-	itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-	goID = Rendering::TextureManager::get().load_texture("./assets/gameover.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
+	texID = Rendering::TextureManager::get().load_texture("./assets/gui.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
+	fontID = Rendering::TextureManager::get().load_texture("./assets/default.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
+	itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
+	goID = Rendering::TextureManager::get().load_texture("./assets/gameover.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
 
 	background_bar = create_scopeptr<Graphics::G2D::Sprite>(texID,
 		Rendering::Rectangle{ {0, 0}, {100, 20} },
@@ -143,6 +143,10 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick, bool gameover) {
 	font_renderer->add_text(str2, glm::vec2(480 - size2, 262), Rendering::Color{ 0, 0, 0, 255 }, -4);
 
 	font_renderer->rebuild();
+
+	#if PSP
+	sceKernelDcacheWritebackInvalidateAll();
+	#endif 
 	font_renderer->draw();
 
 	if (gameover)
