@@ -49,6 +49,8 @@ Player::Player() : texture(0), invSelect(0), inInventory(false) {
     swing = false;
 
     triggerUse = false;
+    dead = false;
+    deathTimer = 5.0f;
 }
 
 Player::~Player() {
@@ -335,6 +337,25 @@ auto Player::update(World* wrld, double dt) -> void {
 
     time = wrld->get_tick_time();
 
+    deathTimer += dt;
+    if (hp <= 0 && deathTimer > 5.0f && !dead) {
+        dead = true;
+        deathTimer = 0.0f;
+        regen = 0;
+    }
+    else if (deathTimer > 5.0f && dead) {
+        //Respawn
+        regen = 2;
+        dead = false;
+        xp = 0;
+        xpval = 0;
+        next_xp = 0;
+        level = 0;
+        hp = base_hp;
+
+        pos.x += rand() % 17 - 9;
+        pos.z += rand() % 17 - 9;
+    }
 }
 
 auto Player::draw() -> void {
@@ -366,7 +387,7 @@ auto Player::draw() -> void {
     Rendering::RenderContext::get().matrix_ortho(0, 480, 0, 272, -30, 30);
     Rendering::RenderContext::get().set_mode_2D();
     Rendering::RenderContext::get().matrix_clear();
-    ui->draw(inventory, inInventory, time);
+    ui->draw(inventory, inInventory, time, dead);
 }
 
 

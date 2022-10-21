@@ -5,10 +5,16 @@ UI::UI(Entity& e) : entity(e), slot_sel(0) {
 	texID = Rendering::TextureManager::get().load_texture("./assets/gui.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 	fontID = Rendering::TextureManager::get().load_texture("./assets/default.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 	itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
+	goID = Rendering::TextureManager::get().load_texture("./assets/gameover.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
 
 	background_bar = create_scopeptr<Graphics::G2D::Sprite>(texID,
 		Rendering::Rectangle{ {0, 0}, {100, 20} },
 		Rendering::Rectangle{ {0, 0}, {50.0f / 128.0f, 10.0f / 128.0f} });
+
+	gameover_sprite = create_scopeptr<Graphics::G2D::Sprite>(goID,
+		Rendering::Rectangle{ {0, 0}, {256, 256} },
+		Rendering::Rectangle{ {0, 1}, {1, -1} });
+	gameover_sprite->set_position({ 240 - 128, 136 - 128 });
 
 	item_slot = create_scopeptr<Graphics::G2D::Sprite>(texID,
 		Rendering::Rectangle{ {0, 0}, {24, 24} },
@@ -36,8 +42,7 @@ UI::UI(Entity& e) : entity(e), slot_sel(0) {
 	}
 }
 
-void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
-
+void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick, bool gameover) {
 #ifndef PSP
     glDisable(GL_DEPTH_TEST);
 #else 
@@ -140,7 +145,9 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) {
 	font_renderer->rebuild();
 	font_renderer->draw();
 
-
+	if (gameover)
+		gameover_sprite->draw();
+	
 #ifndef PSP
     glEnable(GL_DEPTH_TEST);
 #else 

@@ -13,13 +13,14 @@ class UI final {
     public:
     UI(Entity& e);
 
-    auto draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick) -> void;
+    auto draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick, bool gameover) -> void;
 
     u32 slot_sel;
 
     private:
     Entity& entity;
-    u32 texID, fontID, itemID;
+    u32 texID, fontID, itemID, goID;
+    ScopePtr<Graphics::G2D::Sprite> gameover_sprite;
     ScopePtr<Graphics::G2D::Sprite> background_bar;
     ScopePtr<Graphics::G2D::Sprite> red_bar;
     ScopePtr<Graphics::G2D::Sprite> blue_bar;

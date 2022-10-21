@@ -47,6 +47,8 @@ public:
 	float rot;
 	RefPtr<Inventory> inventory;
 	bool inInventory;
+	bool dead;
+	float deathTimer;
 private:
 	uint32_t time;
 	bool triggerHit;

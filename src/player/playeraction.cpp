@@ -4,7 +4,7 @@
 auto Player::move_up(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->acc.x += -sinf(degtorad(p->rot)) * PLAYER_ACCELERATION;
         p->acc.z += -cosf(degtorad(p->rot)) * PLAYER_ACCELERATION;
     }
@@ -12,7 +12,7 @@ auto Player::move_up(std::any a) -> void {
 auto Player::move_down(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->acc.x += sinf(degtorad(p->rot)) * PLAYER_ACCELERATION;
         p->acc.z += cosf(degtorad(p->rot)) * PLAYER_ACCELERATION;
     }
@@ -20,7 +20,7 @@ auto Player::move_down(std::any a) -> void {
 auto Player::move_left(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->facing = false;
         p->acc.x += -sinf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
         p->acc.z += -cosf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
@@ -29,7 +29,7 @@ auto Player::move_left(std::any a) -> void {
 auto Player::move_right(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->facing = true;
         p->acc.x += sinf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
         p->acc.z += cosf(degtorad(p->rot + 90.0f)) * PLAYER_ACCELERATION;
@@ -38,14 +38,14 @@ auto Player::move_right(std::any a) -> void {
 auto Player::move_tiltL(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->rot += 1.0f;
     }
 }
 auto Player::move_tiltR(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr && !p->inInventory) {
+    if (p != nullptr && !p->inInventory && !p->dead) {
         p->rot -= 1.0f;
     }
 }
@@ -53,7 +53,7 @@ auto Player::move_tiltR(std::any a) -> void {
 auto Player::invScrollL(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr) {
+    if (p != nullptr && !p->dead) {
         p->invSelect--;
 
         if(p->invSelect < 0)
@@ -63,7 +63,7 @@ auto Player::invScrollL(std::any a) -> void {
 auto Player::invScrollR(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr) {
+    if (p != nullptr && !p->dead) {
         p->invSelect++;
 
         if(p->invSelect > 5)
@@ -74,14 +74,14 @@ auto Player::invScrollR(std::any a) -> void {
 
 auto Player::toggle_inv(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
-    if (p != nullptr)
+    if (p != nullptr && !p->dead)
         p->inInventory = !p->inInventory;
 }
 
 auto Player::hit(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr) {
+    if (p != nullptr && !p->dead) {
         if (!p->inInventory) {
             if (!p->swing && p->energy > 15) {
                 if (p->inventory->get_slot(p->invSelect).itemID == Item::Bow) {
@@ -134,7 +134,7 @@ auto Player::hit(std::any a) -> void {
 auto Player::use(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
 
-    if (p != nullptr) {
+    if (p != nullptr && !p->dead) {
         if (!p->inInventory) {
             p->triggerUse = true;
         }
