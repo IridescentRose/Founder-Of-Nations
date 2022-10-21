@@ -32,7 +32,7 @@ auto MUSManager::play(uint8_t type) -> void {
         if (active != -1)
             soundmap[(MUSType)active]->stop();
 
-        //soundmap[(MUSType)type]->play();
+        soundmap[(MUSType)type]->play();
         active = type;
     }
 }
