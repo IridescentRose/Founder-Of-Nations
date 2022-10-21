@@ -38,6 +38,8 @@ public:
 
 	static auto invScrollL(std::any a) -> void;
 	static auto invScrollR(std::any a) -> void;
+	static auto invScrollUp(std::any a) -> void;
+	static auto invScrollDown(std::any a) -> void;
 
 	static auto toggle_inv(std::any a) -> void;
 

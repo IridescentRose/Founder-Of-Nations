@@ -72,6 +72,26 @@ auto Player::invScrollR(std::any a) -> void {
 }
 
 
+auto Player::invScrollUp(std::any a) -> void{
+    Player* p = std::any_cast<Player*>(a);
+
+    if(p != nullptr && !p->dead && p->inInventory){
+        if(p->invSelect + 6 < 24) {
+            p->invSelect += 6;
+        }
+    }
+}
+
+auto Player::invScrollDown(std::any a) -> void{
+    Player* p = std::any_cast<Player*>(a);
+
+    if(p != nullptr && !p->dead && p->inInventory){
+        if(p->invSelect - 6 >= 0) {
+            p->invSelect -= 6;
+        }
+    }
+}
+
 auto Player::toggle_inv(std::any a) -> void {
     Player* p = std::any_cast<Player*>(a);
     if (p != nullptr && !p->dead)
@@ -126,6 +146,17 @@ auto Player::hit(std::any a) -> void {
                     p->inventory->slotSel = idx;
                 }
             }
+#else 
+        if (p->inventory->slotSel != -1) {
+            //Swap
+            Slot a = p->inventory->get_slot(p->inventory->slotSel);
+            Slot b = p->inventory->get_slot(p->invSelect);
+            p->inventory->set_slot(p->invSelect, a);
+            p->inventory->set_slot(p->inventory->slotSel, b);
+            p->inventory->slotSel = -1;
+        } else {
+            p->inventory->slotSel = p->invSelect;
+        }
 #endif
         }
     }

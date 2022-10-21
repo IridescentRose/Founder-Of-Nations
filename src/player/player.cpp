@@ -4,6 +4,7 @@
 #include "../sfxman.hpp"
 #include "../musman.hpp"
 #include <ctime>
+#include <Utilities/Input.hpp>
 
 Player::Player() : texture(0), invSelect(0), inInventory(false) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/charsheet.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
@@ -271,6 +272,31 @@ auto Player::update(World* wrld, double dt) -> void {
             item.itemID = Item::None;
     }
     character->update(dt);
+
+#if PSP
+    if(!inInventory){
+    auto cX = (Utilities::Input::get_axis("PSP", "X") - 0.5f) * 2.0f;
+    auto cY = (Utilities::Input::get_axis("PSP", "Y") - 0.5f) * 2.0f;
+
+    if(cX > 0.5f || cX < -0.5f) {
+        if(cX > 0)
+            facing = true;
+        else
+            facing = false;
+        acc.x += sinf(degtorad(rot + 90.0f)) * PLAYER_ACCELERATION * cX;
+        acc.z += cosf(degtorad(rot + 90.0f)) * PLAYER_ACCELERATION * cX;
+    }
+
+    if(cY > 0.5f || cY < -0.5f) {
+        acc.x += sinf(degtorad(rot)) * PLAYER_ACCELERATION * cY;
+        acc.z += cosf(degtorad(rot)) * PLAYER_ACCELERATION * cY;
+    }
+    }
+#endif
+
+    if(!inInventory && invSelect >= 6){
+        invSelect = invSelect % 6;
+    }
 
     float len = sqrtf(acc.x * acc.x + acc.z * acc.z);
 

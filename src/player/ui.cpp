@@ -125,9 +125,39 @@ void UI::draw(RefPtr<Inventory> inv, bool inInv, uint32_t tick, bool gameover) {
 		}
 	}
 
-	item_slot_sel->set_position({ 168 + 24 * slot_sel, 0 });
-	item_slot_sel->set_layer(-4);
-	item_slot_sel->draw();
+	if(!inInv) {
+		item_slot_sel->set_position({ 168 + 24 * slot_sel, 0 });
+		item_slot_sel->set_layer(-4);
+		item_slot_sel->draw();
+	} else {
+		if(slot_sel < 6) {
+			item_slot_sel->set_position({ 168 + 24 * slot_sel, 0 });
+			item_slot_sel->set_layer(-4);
+			item_slot_sel->draw();
+		} else {
+			auto x = slot_sel % 6;
+			auto y = slot_sel / 6 - 1;
+
+			item_slot_sel->set_position({ 168 + 24 * x, 40 + y * 32 });
+			item_slot_sel->set_layer(-2);
+			item_slot_sel->draw();
+		}
+
+		if(inv->slotSel != -1){
+		if(inv->slotSel < 6) {
+			item_slot_sel->set_position({ 168 + 24 * inv->slotSel, 0 });
+			item_slot_sel->set_layer(-4);
+			item_slot_sel->draw();
+		} else {
+			auto x = inv->slotSel % 6;
+			auto y = inv->slotSel / 6 - 1;
+
+			item_slot_sel->set_position({ 168 + 24 * x, 40 + y * 32 });
+			item_slot_sel->set_layer(-2);
+			item_slot_sel->draw();
+		}
+		}
+	}
 
 	auto str = "Position: " + std::to_string((int)entity.pos.x) + " " + std::to_string((int)entity.pos.z);
 	auto size = font_renderer->calculate_size(str);
