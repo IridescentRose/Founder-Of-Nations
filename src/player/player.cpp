@@ -2,6 +2,8 @@
 #include "../world/tiles.hpp"
 #include <gtx/rotate_vector.hpp>
 #include "../sfxman.hpp"
+#include "../musman.hpp"
+#include <ctime>
 
 Player::Player() : texture(0), invSelect(0), inInventory(false) {
 	texture = Rendering::TextureManager::get().load_texture("./assets/charsheet.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
@@ -51,6 +53,7 @@ Player::Player() : texture(0), invSelect(0), inInventory(false) {
     triggerUse = false;
     dead = false;
     deathTimer = 5.0f;
+    MUSManager::get().play(rand() % 4);
 }
 
 Player::~Player() {
@@ -342,6 +345,7 @@ auto Player::update(World* wrld, double dt) -> void {
         dead = true;
         deathTimer = 0.0f;
         regen = 0;
+        MUSManager::get().play(MUS_TYPE_DEATH);
     }
     else if (deathTimer > 5.0f && dead) {
         //Respawn
@@ -349,12 +353,13 @@ auto Player::update(World* wrld, double dt) -> void {
         dead = false;
         xp = 0;
         xpval = 0;
-        next_xp = 0;
+        next_xp = 100;
         level = 0;
         hp = base_hp;
 
         pos.x += rand() % 17 - 9;
         pos.z += rand() % 17 - 9;
+        MUSManager::get().play(rand() % 4);
     }
 }
 

@@ -2,12 +2,14 @@
 #include <Utilities/Controllers/KeyboardController.hpp>
 #include <Utilities/Controllers/MouseController.hpp>
 #include <Utilities/Controllers/PSPController.hpp>
+#include "musman.hpp"
 
 #ifndef PSP
 #include <GLFW/glfw3.h>
 #endif
 
 auto GameState::on_start() -> void {
+    srand(time(NULL));
     player = create_refptr<Player>();
     world = create_scopeptr<World>(player);
 
@@ -59,6 +61,7 @@ auto GameState::on_cleanup() -> void {
 
 auto GameState::on_update(Core::Application *app, double dt) -> void {
     Utilities::Input::update();
+    MUSManager::get().update();
 
     player->update(world.get(), dt);
     world->update(dt);
