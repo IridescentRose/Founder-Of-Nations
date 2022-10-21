@@ -19,15 +19,15 @@ auto GameState::on_start() -> void {
     key_controller = new Input::KeyboardController();
     mouse_controller = new Input::MouseController();
 
-    //TODO: PSP -> ANALOG MOVE
-    //TODO: PSP -> INV SCROLL LEFT / RIGHT
-    //TODO: PSP -> INVENTORY TOGGLE
-    psp_controller->add_command({ (int)Input::PSPButtons::Up, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });
-    psp_controller->add_command({ (int)Input::PSPButtons::Down, KeyFlag::Press | KeyFlag::Held }, { Player::move_down, player.get() });
-    psp_controller->add_command({ (int)Input::PSPButtons::Left, KeyFlag::Press | KeyFlag::Held }, { Player::move_left, player.get() });
-    psp_controller->add_command({ (int)Input::PSPButtons::Right, KeyFlag::Press | KeyFlag::Held }, { Player::move_right, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::LTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltL, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::RTrigger, KeyFlag::Press | KeyFlag::Held }, { Player::move_tiltR, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Left, KeyFlag::Press }, { Player::invScrollL, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Right, KeyFlag::Press }, { Player::invScrollR, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Up, KeyFlag::Press }, { Player::invScrollUp, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Down, KeyFlag::Press }, { Player::invScrollDown, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Triangle, KeyFlag::Press }, { Player::toggle_inv, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Cross, KeyFlag::Press }, { Player::hit, player.get() });
+    psp_controller->add_command({ (int)Input::PSPButtons::Square, KeyFlag::Press }, { Player::use, player.get() });
     psp_controller->add_command({ (int)Input::PSPButtons::Start, KeyFlag::Press }, { World::save_game, world.get() });
 
     key_controller->add_command({ (int)Input::Keys::W, KeyFlag::Press | KeyFlag::Held }, { Player::move_up, player.get() });

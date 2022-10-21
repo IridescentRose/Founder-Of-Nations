@@ -16,12 +16,12 @@ EntityManager::EntityManager(RefPtr<Player> p) {
     arrows.clear();
     humans.clear();
 
-    beholderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/beholder.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
-    slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
-    spiderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/spider.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
-    arrowTex = Rendering::TextureManager::get().load_texture("./assets/arrow.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
-    itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-	humanTex = Rendering::TextureManager::get().load_texture("./assets/humans.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
+    beholderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/beholder.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, false);
+    slimeTex = Rendering::TextureManager::get().load_texture("./assets/enemies/slime.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, false);
+    spiderTex = Rendering::TextureManager::get().load_texture("./assets/enemies/spider.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, false);
+    arrowTex = Rendering::TextureManager::get().load_texture("./assets/arrow.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, false);
+    itemID = Rendering::TextureManager::get().load_texture("./assets/items.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
+	humanTex = Rendering::TextureManager::get().load_texture("./assets/humans.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
 
     arrowSprite = create_refptr<Graphics::G2D::Sprite>(arrowTex, Rendering::Rectangle{ {0,0}, {32, 32}});
 

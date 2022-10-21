@@ -29,8 +29,8 @@ auto MUSManager::update() -> void {
 
 auto MUSManager::play(uint8_t type) -> void {
     if(soundmap.find((MUSType)type) != soundmap.end()) {
-        //if (active != -1)
-        //    soundmap[(MUSType)active]->stop();
+        if (active != -1)
+            soundmap[(MUSType)active]->stop();
 
         soundmap[(MUSType)type]->play();
         active = type;

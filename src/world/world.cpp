@@ -101,8 +101,8 @@ auto World::save_game(std::any a) -> void {
 
 World::World(RefPtr<Player> player) {
     this->player = player;
-    terrain_texture = Rendering::TextureManager::get().load_texture("./assets/terrain.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, true);
-    tree_texture = Rendering::TextureManager::get().load_texture("./assets/trees.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, true);
+    terrain_texture = Rendering::TextureManager::get().load_texture("./assets/terrain.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, false, false);
+    tree_texture = Rendering::TextureManager::get().load_texture("./assets/trees.png", SC_TEX_FILTER_NEAREST, SC_TEX_FILTER_NEAREST, true, true, false);
 
     eman = create_scopeptr<EntityManager>(player);
 
@@ -197,10 +197,17 @@ auto World::set_tile2(glm::ivec2 pos, uint8_t type) -> void {
     }
 }
 
+#ifndef PSP
 #define CHUNK_X_RANGE_MIN -2
 #define CHUNK_X_RANGE_MAX 2
 #define CHUNK_Z_RANGE_MIN -2
 #define CHUNK_Z_RANGE_MAX 2
+#else
+#define CHUNK_X_RANGE_MIN -1
+#define CHUNK_X_RANGE_MAX 1
+#define CHUNK_Z_RANGE_MIN -1
+#define CHUNK_Z_RANGE_MAX 1
+#endif
 
 auto World::update_chunks() -> void {
     auto pos = player->pos;
